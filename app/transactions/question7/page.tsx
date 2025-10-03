@@ -1,6 +1,6 @@
 // app/transactions/question7/page.tsx
 import { Suspense } from "react";
-import Question7Client from "@/components/questions/question7-client";
+import Question7Client from "@/components/questions/(question7-client-group)/question7-client";
 import { getTransactions } from "@/lib/services/transaction-service";
 import { transactionQuerySchema } from "@/lib/validation/transaction-schema";
 import type { TransactionFilters } from "@/lib/types/transaction";
