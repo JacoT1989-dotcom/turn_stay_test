@@ -60,7 +60,6 @@ const transactions: Transaction[] = [
 ];
 
 export default function Question8Client() {
-  const [isDark, setIsDark] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<string | null>(
     null
   );
@@ -105,59 +104,12 @@ export default function Question8Client() {
     : null;
 
   return (
-    <div
-      className={`min-h-screen py-12 px-4 transition-colors duration-300 ${
-        isDark ? "bg-gray-900" : "bg-gray-50"
-      }`}
-    >
+    <div className="min-h-screen py-12 px-4 bg-gray-50">
       <div className="max-w-7xl mx-auto">
-        {/* Theme Toggle */}
-        <button
-          onClick={() => setIsDark(!isDark)}
-          className={`fixed top-6 right-6 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-50 ${
-            isDark ? "bg-gray-700 text-yellow-400" : "bg-white text-gray-800"
-          }`}
-          aria-label="Toggle theme"
-        >
-          {isDark ? (
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-              />
-            </svg>
-          ) : (
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-              />
-            </svg>
-          )}
-        </button>
-
         {/* Back Button */}
         <Link
           href="/"
-          className={`inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-lg transition-colors ${
-            isDark
-              ? "bg-gray-800 text-gray-200 hover:bg-gray-700"
-              : "bg-white text-gray-700 hover:bg-gray-100"
-          }`}
+          className="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-lg transition-colors bg-white text-gray-700 hover:bg-gray-100"
         >
           <svg
             className="w-5 h-5"
@@ -176,17 +128,9 @@ export default function Question8Client() {
         </Link>
 
         {/* Question Header */}
-        <div
-          className={`rounded-xl shadow-2xl p-8 mb-8 transition-colors ${
-            isDark ? "bg-gray-800" : "bg-white"
-          }`}
-        >
+        <div className="rounded-xl shadow-2xl p-8 mb-8 bg-white">
           <div className="flex items-center gap-3 mb-4">
-            <span
-              className={`text-4xl font-bold ${
-                isDark ? "text-indigo-400" : "text-indigo-600"
-              }`}
-            >
+            <span className="text-4xl font-bold text-indigo-600">
               Question 8
             </span>
             <span className="px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-800">
@@ -194,19 +138,11 @@ export default function Question8Client() {
             </span>
           </div>
 
-          <h2
-            className={`text-3xl font-bold mb-4 ${
-              isDark ? "text-white" : "text-gray-800"
-            }`}
-          >
+          <h2 className="text-3xl font-bold mb-4 text-gray-800">
             Multi-Tenant Fee Policy + Overrides Matrix
           </h2>
 
-          <div
-            className={`space-y-4 ${
-              isDark ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
+          <div className="space-y-4 text-gray-700">
             <p className="text-lg">
               <span className="font-semibold">What you need to do:</span> Build
               a policy system with deterministic fee resolution, specificity
@@ -236,23 +172,11 @@ export default function Question8Client() {
         </div>
 
         {/* Tenant Info */}
-        <div
-          className={`rounded-xl shadow-2xl p-6 mb-8 transition-colors ${
-            isDark ? "bg-gray-800" : "bg-white"
-          }`}
-        >
-          <h3
-            className={`text-xl font-bold mb-3 ${
-              isDark ? "text-indigo-400" : "text-indigo-600"
-            }`}
-          >
+        <div className="rounded-xl shadow-2xl p-6 mb-8 bg-white">
+          <h3 className="text-xl font-bold mb-3 text-indigo-600">
             Current Tenant Policy
           </h3>
-          <div
-            className={`grid grid-cols-2 md:grid-cols-4 gap-4 ${
-              isDark ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-gray-700">
             <div>
               <div className="text-sm text-gray-500">Tenant</div>
               <div className="font-semibold">{mockTenantPolicy.tenantName}</div>
@@ -277,16 +201,8 @@ export default function Question8Client() {
         </div>
 
         {/* Transactions Table/Cards */}
-        <div
-          className={`rounded-xl shadow-2xl p-4 md:p-8 transition-colors ${
-            isDark ? "bg-gray-800" : "bg-white"
-          }`}
-        >
-          <h3
-            className={`text-2xl font-bold mb-6 ${
-              isDark ? "text-indigo-400" : "text-indigo-600"
-            }`}
-          >
+        <div className="rounded-xl shadow-2xl p-4 md:p-8 bg-white">
+          <h3 className="text-2xl font-bold mb-6 text-indigo-600">
             Transactions with Policy Resolution
           </h3>
 
@@ -294,58 +210,26 @@ export default function Question8Client() {
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
-                <tr
-                  className={`border-b-2 ${
-                    isDark ? "border-gray-700" : "border-gray-200"
-                  }`}
-                >
-                  <th
-                    className={`text-left py-3 px-4 font-semibold ${
-                      isDark ? "text-gray-200" : "text-gray-700"
-                    }`}
-                  >
+                <tr className="border-b-2 border-gray-200">
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">
                     ID
                   </th>
-                  <th
-                    className={`text-left py-3 px-4 font-semibold ${
-                      isDark ? "text-gray-200" : "text-gray-700"
-                    }`}
-                  >
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">
                     Date
                   </th>
-                  <th
-                    className={`text-right py-3 px-4 font-semibold ${
-                      isDark ? "text-gray-200" : "text-gray-700"
-                    }`}
-                  >
+                  <th className="text-right py-3 px-4 font-semibold text-gray-700">
                     Amount
                   </th>
-                  <th
-                    className={`text-left py-3 px-4 font-semibold ${
-                      isDark ? "text-gray-200" : "text-gray-700"
-                    }`}
-                  >
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">
                     Currency
                   </th>
-                  <th
-                    className={`text-left py-3 px-4 font-semibold ${
-                      isDark ? "text-gray-200" : "text-gray-700"
-                    }`}
-                  >
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">
                     Payment
                   </th>
-                  <th
-                    className={`text-right py-3 px-4 font-semibold ${
-                      isDark ? "text-gray-200" : "text-gray-700"
-                    }`}
-                  >
+                  <th className="text-right py-3 px-4 font-semibold text-gray-700">
                     Fee
                   </th>
-                  <th
-                    className={`text-center py-3 px-4 font-semibold ${
-                      isDark ? "text-gray-200" : "text-gray-700"
-                    }`}
-                  >
+                  <th className="text-center py-3 px-4 font-semibold text-gray-700">
                     Why?
                   </th>
                 </tr>
@@ -355,40 +239,18 @@ export default function Question8Client() {
                   ({ transaction: tx, resolution }) => (
                     <tr
                       key={tx.id}
-                      className={`border-b transition-colors ${
-                        isDark
-                          ? "border-gray-700 hover:bg-gray-750"
-                          : "border-gray-100 hover:bg-gray-50"
-                      }`}
+                      className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                     >
-                      <td
-                        className={`py-3 px-4 font-mono text-sm ${
-                          isDark ? "text-gray-300" : "text-gray-600"
-                        }`}
-                      >
+                      <td className="py-3 px-4 font-mono text-sm text-gray-600">
                         {tx.id}
                       </td>
-                      <td
-                        className={`py-3 px-4 ${
-                          isDark ? "text-gray-300" : "text-gray-700"
-                        }`}
-                      >
+                      <td className="py-3 px-4 text-gray-700">
                         {formatDate(tx.createdAt)}
                       </td>
-                      <td
-                        className={`py-3 px-4 text-right font-semibold ${
-                          isDark ? "text-gray-200" : "text-gray-800"
-                        }`}
-                      >
+                      <td className="py-3 px-4 text-right font-semibold text-gray-800">
                         {formatAmount(tx.amount)}
                       </td>
-                      <td
-                        className={`py-3 px-4 ${
-                          isDark ? "text-gray-300" : "text-gray-700"
-                        }`}
-                      >
-                        {tx.currency}
-                      </td>
+                      <td className="py-3 px-4 text-gray-700">{tx.currency}</td>
                       <td className="py-3 px-4">
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -403,11 +265,7 @@ export default function Question8Client() {
                           {tx.scheme && ` • ${tx.scheme}`}
                         </span>
                       </td>
-                      <td
-                        className={`py-3 px-4 text-right ${
-                          isDark ? "text-gray-300" : "text-gray-700"
-                        }`}
-                      >
+                      <td className="py-3 px-4 text-right text-gray-700">
                         <div className="flex flex-col items-end gap-1">
                           <div className="flex items-center gap-2">
                             <span className="text-xs text-gray-500">
@@ -432,11 +290,7 @@ export default function Question8Client() {
                       <td className="py-3 px-4 text-center">
                         <button
                           onClick={() => setSelectedTransaction(tx.id)}
-                          className={`px-3 py-1 rounded-lg text-sm font-medium transition-all ${
-                            isDark
-                              ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                              : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
-                          }`}
+                          className="px-3 py-1 rounded-lg text-sm font-medium transition-all bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
                         >
                           Explain
                         </button>
@@ -453,18 +307,10 @@ export default function Question8Client() {
             {transactionsWithPolicy.map(({ transaction: tx, resolution }) => (
               <div
                 key={tx.id}
-                className={`rounded-lg p-4 border transition-colors ${
-                  isDark
-                    ? "bg-gray-750 border-gray-700"
-                    : "bg-gray-50 border-gray-200"
-                }`}
+                className="rounded-lg p-4 border bg-gray-50 border-gray-200"
               >
                 <div className="flex justify-between items-start mb-3">
-                  <span
-                    className={`font-mono text-sm font-semibold ${
-                      isDark ? "text-indigo-400" : "text-indigo-600"
-                    }`}
-                  >
+                  <span className="font-mono text-sm font-semibold text-indigo-600">
                     {tx.id}
                   </span>
                   <div className="flex items-center gap-2 flex-wrap justify-end">
@@ -493,48 +339,28 @@ export default function Question8Client() {
                   </div>
                 </div>
 
-                <div
-                  className={`text-2xl font-bold mb-2 ${
-                    isDark ? "text-gray-200" : "text-gray-800"
-                  }`}
-                >
+                <div className="text-2xl font-bold mb-2 text-gray-800">
                   {tx.currency} {formatAmount(tx.amount)}
                 </div>
 
                 <div className="flex justify-between items-center mb-2">
-                  <span
-                    className={`text-sm ${
-                      isDark ? "text-gray-400" : "text-gray-600"
-                    }`}
-                  >
+                  <span className="text-sm text-gray-600">
                     Fee ({(resolution.feeBps / 100).toFixed(2)}%)
                   </span>
-                  <span
-                    className={`text-lg font-semibold ${
-                      isDark ? "text-gray-200" : "text-gray-800"
-                    }`}
-                  >
+                  <span className="text-lg font-semibold text-gray-800">
                     {formatAmount(resolution.feeAmount)}
                   </span>
                 </div>
 
-                <div
-                  className={`text-sm mb-3 ${
-                    isDark ? "text-gray-400" : "text-gray-600"
-                  }`}
-                >
+                <div className="text-sm mb-3 text-gray-600">
                   {formatDate(tx.createdAt)}
                 </div>
 
                 <button
                   onClick={() => setSelectedTransaction(tx.id)}
-                  className={`w-full px-4 py-2.5 rounded-lg font-semibold transition-all shadow-md ${
-                    isDark
-                      ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                      : "bg-indigo-600 text-white hover:bg-indigo-700"
-                  }`}
+                  className="w-full px-4 py-2.5 rounded-lg font-semibold transition-all shadow-md bg-indigo-600 text-white hover:bg-indigo-700"
                 >
-                  📊 Explain This Fee
+                  Explain This Fee
                 </button>
               </div>
             ))}
@@ -548,54 +374,34 @@ export default function Question8Client() {
             onClick={() => setSelectedTransaction(null)}
           >
             <div
-              className={`rounded-xl shadow-2xl p-6 md:p-8 max-w-3xl w-full max-h-[80vh] overflow-y-auto ${
-                isDark ? "bg-gray-800" : "bg-white"
-              }`}
+              className="rounded-xl shadow-2xl p-6 md:p-8 max-w-3xl w-full max-h-[80vh] overflow-y-auto bg-white"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h3
-                  className={`text-xl md:text-2xl font-bold ${
-                    isDark ? "text-indigo-400" : "text-indigo-600"
-                  }`}
-                >
+                <h3 className="text-xl md:text-2xl font-bold text-indigo-600">
                   Why This Fee? - {selectedTxData.transaction.id}
                 </h3>
                 <button
                   onClick={() => setSelectedTransaction(null)}
-                  className={`p-2 rounded-lg transition-colors ${
-                    isDark ? "hover:bg-gray-700" : "hover:bg-gray-100"
-                  }`}
+                  className="p-2 rounded-lg transition-colors hover:bg-gray-100"
                 >
                   ✕
                 </button>
               </div>
 
               {/* Transaction Summary */}
-              <div
-                className={`p-4 rounded-lg mb-6 ${
-                  isDark ? "bg-gray-700" : "bg-gray-50"
-                }`}
-              >
+              <div className="p-4 rounded-lg mb-6 bg-gray-50">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <div className="text-sm text-gray-500">Amount</div>
-                    <div
-                      className={`font-semibold ${
-                        isDark ? "text-gray-200" : "text-gray-800"
-                      }`}
-                    >
+                    <div className="font-semibold text-gray-800">
                       {formatAmount(selectedTxData.transaction.amount)}{" "}
                       {selectedTxData.transaction.currency}
                     </div>
                   </div>
                   <div>
                     <div className="text-sm text-gray-500">Payment Method</div>
-                    <div
-                      className={`font-semibold capitalize ${
-                        isDark ? "text-gray-200" : "text-gray-800"
-                      }`}
-                    >
+                    <div className="font-semibold capitalize text-gray-800">
                       {selectedTxData.transaction.paymentType}
                       {selectedTxData.transaction.scheme &&
                         ` • ${selectedTxData.transaction.scheme}`}
@@ -603,22 +409,14 @@ export default function Question8Client() {
                   </div>
                   <div>
                     <div className="text-sm text-gray-500">Final Fee</div>
-                    <div
-                      className={`font-semibold ${
-                        isDark ? "text-gray-200" : "text-gray-800"
-                      }`}
-                    >
+                    <div className="font-semibold text-gray-800">
                       {(selectedTxData.resolution.feeBps / 100).toFixed(2)}% ={" "}
                       {formatAmount(selectedTxData.resolution.feeAmount)}
                     </div>
                   </div>
                   <div>
                     <div className="text-sm text-gray-500">Rule Applied</div>
-                    <div
-                      className={`font-semibold ${
-                        isDark ? "text-gray-200" : "text-gray-800"
-                      }`}
-                    >
+                    <div className="font-semibold text-gray-800">
                       {selectedTxData.resolution.finalRule?.name ||
                         "Base Policy"}
                     </div>
@@ -657,11 +455,7 @@ export default function Question8Client() {
 
               {/* Resolution Trace */}
               <div>
-                <h4
-                  className={`text-lg font-semibold mb-4 ${
-                    isDark ? "text-gray-200" : "text-gray-800"
-                  }`}
-                >
+                <h4 className="text-lg font-semibold mb-4 text-gray-800">
                   Resolution Steps
                 </h4>
                 <div className="space-y-3">
@@ -671,8 +465,6 @@ export default function Question8Client() {
                       className={`p-4 rounded-lg border ${
                         step.type === "conflict"
                           ? "border-red-200 bg-red-50"
-                          : isDark
-                          ? "border-gray-600 bg-gray-700"
                           : "border-gray-200 bg-gray-50"
                       }`}
                     >
@@ -681,19 +473,13 @@ export default function Question8Client() {
                           className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
                             step.type === "conflict"
                               ? "bg-red-500 text-white"
-                              : isDark
-                              ? "bg-indigo-600 text-white"
                               : "bg-indigo-100 text-indigo-700"
                           }`}
                         >
                           {step.step}
                         </div>
                         <div className="flex-1">
-                          <p
-                            className={`text-sm whitespace-pre-line ${
-                              isDark ? "text-gray-200" : "text-gray-800"
-                            }`}
-                          >
+                          <p className="text-sm whitespace-pre-line text-gray-800">
                             {step.description}
                           </p>
                           {step.feeBps !== undefined && (
@@ -710,36 +496,26 @@ export default function Question8Client() {
 
               {/* Rule Details */}
               {selectedTxData.resolution.finalRule && (
-                <div
-                  className={`mt-6 p-4 rounded-lg ${
-                    isDark ? "bg-gray-700" : "bg-gray-50"
-                  }`}
-                >
-                  <h4
-                    className={`text-sm font-semibold mb-2 ${
-                      isDark ? "text-gray-200" : "text-gray-800"
-                    }`}
-                  >
+                <div className="mt-6 p-4 rounded-lg bg-gray-50">
+                  <h4 className="text-sm font-semibold mb-2 text-gray-800">
                     Applied Rule Details
                   </h4>
                   <div className="text-sm space-y-1">
-                    <div className={isDark ? "text-gray-300" : "text-gray-700"}>
+                    <div className="text-gray-700">
                       <span className="font-medium">ID:</span>{" "}
                       {selectedTxData.resolution.finalRule.id}
                     </div>
-                    <div className={isDark ? "text-gray-300" : "text-gray-700"}>
+                    <div className="text-gray-700">
                       <span className="font-medium">Name:</span>{" "}
                       {selectedTxData.resolution.finalRule.name}
                     </div>
                     {selectedTxData.resolution.finalRule.description && (
-                      <div
-                        className={isDark ? "text-gray-300" : "text-gray-700"}
-                      >
+                      <div className="text-gray-700">
                         <span className="font-medium">Description:</span>{" "}
                         {selectedTxData.resolution.finalRule.description}
                       </div>
                     )}
-                    <div className={isDark ? "text-gray-300" : "text-gray-700"}>
+                    <div className="text-gray-700">
                       <span className="font-medium">Criteria:</span>{" "}
                       {getRuleCriteria(selectedTxData.resolution.finalRule)}
                     </div>
@@ -749,11 +525,7 @@ export default function Question8Client() {
 
               <button
                 onClick={() => setSelectedTransaction(null)}
-                className={`mt-6 w-full px-4 py-2 rounded-lg font-medium transition-colors ${
-                  isDark
-                    ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                }`}
+                className="mt-6 w-full px-4 py-2 rounded-lg font-medium transition-colors bg-gray-200 text-gray-700 hover:bg-gray-300"
               >
                 Close
               </button>
@@ -762,24 +534,12 @@ export default function Question8Client() {
         )}
 
         {/* Key Concepts */}
-        <div
-          className={`rounded-xl shadow-2xl p-8 mt-8 transition-colors ${
-            isDark ? "bg-gray-800" : "bg-white"
-          }`}
-        >
-          <h3
-            className={`text-2xl font-bold mb-4 ${
-              isDark ? "text-indigo-400" : "text-indigo-600"
-            }`}
-          >
+        <div className="rounded-xl shadow-2xl p-8 mt-8 bg-white">
+          <h3 className="text-2xl font-bold mb-4 text-indigo-600">
             Key Concepts Demonstrated
           </h3>
 
-          <div
-            className={`space-y-4 ${
-              isDark ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
+          <div className="space-y-4 text-gray-700">
             <div>
               <h4 className="font-semibold mb-2">
                 1. Deterministic Policy Resolution

@@ -86,7 +86,6 @@ const calcFeeAmount = (amount: number, bps: number): number => {
 };
 
 export default function Question6Client() {
-  const [isDark, setIsDark] = useState(false);
   const [showGrouped, setShowGrouped] = useState(false);
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
 
@@ -154,57 +153,11 @@ export default function Question6Client() {
   };
 
   return (
-    <div
-      className={`min-h-screen py-12 px-4 transition-colors duration-300 ${
-        isDark ? "bg-gray-900" : "bg-gray-50"
-      }`}
-    >
+    <div className="min-h-screen py-12 px-4 bg-gray-50">
       <div className="max-w-7xl mx-auto">
-        <button
-          onClick={() => setIsDark(!isDark)}
-          className={`fixed top-6 right-6 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-50 ${
-            isDark ? "bg-gray-700 text-yellow-400" : "bg-white text-gray-800"
-          }`}
-          aria-label="Toggle theme"
-        >
-          {isDark ? (
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-              />
-            </svg>
-          ) : (
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-              />
-            </svg>
-          )}
-        </button>
-
         <Link
           href="/"
-          className={`inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-lg transition-colors ${
-            isDark
-              ? "bg-gray-800 text-gray-200 hover:bg-gray-700"
-              : "bg-white text-gray-700 hover:bg-gray-100"
-          }`}
+          className="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-lg transition-colors bg-white text-gray-700 hover:bg-gray-100"
         >
           <svg
             className="w-5 h-5"
@@ -222,17 +175,9 @@ export default function Question6Client() {
           Back to Home
         </Link>
 
-        <div
-          className={`rounded-xl shadow-2xl p-8 mb-8 transition-colors ${
-            isDark ? "bg-gray-800" : "bg-white"
-          }`}
-        >
+        <div className="rounded-xl shadow-2xl p-8 mb-8 bg-white">
           <div className="flex items-center gap-3 mb-4">
-            <span
-              className={`text-4xl font-bold ${
-                isDark ? "text-indigo-400" : "text-indigo-600"
-              }`}
-            >
+            <span className="text-4xl font-bold text-indigo-600">
               Question 6
             </span>
             <span className="px-3 py-1 rounded-full text-sm font-semibold bg-orange-100 text-orange-800">
@@ -240,19 +185,11 @@ export default function Question6Client() {
             </span>
           </div>
 
-          <h2
-            className={`text-3xl font-bold mb-4 ${
-              isDark ? "text-white" : "text-gray-800"
-            }`}
-          >
+          <h2 className="text-3xl font-bold mb-4 text-gray-800">
             Grouping + Aggregates
           </h2>
 
-          <div
-            className={`space-y-4 ${
-              isDark ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
+          <div className="space-y-4 text-gray-700">
             <p className="text-lg">
               <span className="font-semibold">What you need to do:</span> Add a
               grouped view toggle that shows aggregates by currency → payment
@@ -283,27 +220,15 @@ export default function Question6Client() {
           </div>
         </div>
 
-        <div
-          className={`rounded-xl shadow-2xl p-4 md:p-8 transition-colors ${
-            isDark ? "bg-gray-800" : "bg-white"
-          }`}
-        >
+        <div className="rounded-xl shadow-2xl p-4 md:p-8 bg-white">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-            <h3
-              className={`text-2xl font-bold ${
-                isDark ? "text-indigo-400" : "text-indigo-600"
-              }`}
-            >
-              Solution
-            </h3>
+            <h3 className="text-2xl font-bold text-indigo-600">Solution</h3>
 
             <button
               onClick={() => setShowGrouped(!showGrouped)}
               className={`px-4 py-2 rounded-lg font-medium text-sm transition-all w-full sm:w-auto ${
                 showGrouped
                   ? "bg-indigo-600 text-white shadow-md hover:bg-indigo-700"
-                  : isDark
-                  ? "bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600"
                   : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
               }`}
             >
@@ -317,51 +242,23 @@ export default function Question6Client() {
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full border-collapse">
                   <thead>
-                    <tr
-                      className={`border-b-2 ${
-                        isDark ? "border-gray-700" : "border-gray-200"
-                      }`}
-                    >
-                      <th
-                        className={`text-left py-3 px-4 font-semibold ${
-                          isDark ? "text-gray-200" : "text-gray-700"
-                        }`}
-                      >
+                    <tr className="border-b-2 border-gray-200">
+                      <th className="text-left py-3 px-4 font-semibold text-gray-700">
                         ID
                       </th>
-                      <th
-                        className={`text-left py-3 px-4 font-semibold ${
-                          isDark ? "text-gray-200" : "text-gray-700"
-                        }`}
-                      >
+                      <th className="text-left py-3 px-4 font-semibold text-gray-700">
                         Date
                       </th>
-                      <th
-                        className={`text-right py-3 px-4 font-semibold ${
-                          isDark ? "text-gray-200" : "text-gray-700"
-                        }`}
-                      >
+                      <th className="text-right py-3 px-4 font-semibold text-gray-700">
                         Amount
                       </th>
-                      <th
-                        className={`text-left py-3 px-4 font-semibold ${
-                          isDark ? "text-gray-200" : "text-gray-700"
-                        }`}
-                      >
+                      <th className="text-left py-3 px-4 font-semibold text-gray-700">
                         Currency
                       </th>
-                      <th
-                        className={`text-left py-3 px-4 font-semibold ${
-                          isDark ? "text-gray-200" : "text-gray-700"
-                        }`}
-                      >
+                      <th className="text-left py-3 px-4 font-semibold text-gray-700">
                         Payment Type
                       </th>
-                      <th
-                        className={`text-right py-3 px-4 font-semibold ${
-                          isDark ? "text-gray-200" : "text-gray-700"
-                        }`}
-                      >
+                      <th className="text-right py-3 px-4 font-semibold text-gray-700">
                         Fee
                       </th>
                     </tr>
@@ -374,38 +271,18 @@ export default function Question6Client() {
                       return (
                         <tr
                           key={tx.id}
-                          className={`border-b transition-colors ${
-                            isDark
-                              ? "border-gray-700 hover:bg-gray-750"
-                              : "border-gray-100 hover:bg-gray-50"
-                          }`}
+                          className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                         >
-                          <td
-                            className={`py-3 px-4 font-mono text-sm ${
-                              isDark ? "text-gray-300" : "text-gray-600"
-                            }`}
-                          >
+                          <td className="py-3 px-4 font-mono text-sm text-gray-600">
                             {tx.id}
                           </td>
-                          <td
-                            className={`py-3 px-4 ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
+                          <td className="py-3 px-4 text-gray-700">
                             {formatDate(tx.createdAt)}
                           </td>
-                          <td
-                            className={`py-3 px-4 text-right font-semibold ${
-                              isDark ? "text-gray-200" : "text-gray-800"
-                            }`}
-                          >
+                          <td className="py-3 px-4 text-right font-semibold text-gray-800">
                             {formatAmount(tx.amount)}
                           </td>
-                          <td
-                            className={`py-3 px-4 ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
+                          <td className="py-3 px-4 text-gray-700">
                             {tx.currency}
                           </td>
                           <td className="py-3 px-4">
@@ -421,11 +298,7 @@ export default function Question6Client() {
                               {tx.paymentType}
                             </span>
                           </td>
-                          <td
-                            className={`py-3 px-4 text-right ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
+                          <td className="py-3 px-4 text-right text-gray-700">
                             <div className="flex flex-col items-end">
                               <span className="text-xs text-gray-500">
                                 {bpsToPercent(feeBps)}
@@ -451,18 +324,10 @@ export default function Question6Client() {
                   return (
                     <div
                       key={tx.id}
-                      className={`rounded-lg p-4 border transition-colors ${
-                        isDark
-                          ? "bg-gray-750 border-gray-700"
-                          : "bg-gray-50 border-gray-200"
-                      }`}
+                      className="rounded-lg p-4 border bg-gray-50 border-gray-200"
                     >
                       <div className="flex justify-between items-start mb-3">
-                        <span
-                          className={`font-mono text-sm font-semibold ${
-                            isDark ? "text-indigo-400" : "text-indigo-600"
-                          }`}
-                        >
+                        <span className="font-mono text-sm font-semibold text-indigo-600">
                           {tx.id}
                         </span>
                         <span
@@ -478,36 +343,20 @@ export default function Question6Client() {
                         </span>
                       </div>
 
-                      <div
-                        className={`text-2xl font-bold mb-2 ${
-                          isDark ? "text-gray-200" : "text-gray-800"
-                        }`}
-                      >
+                      <div className="text-2xl font-bold mb-2 text-gray-800">
                         {tx.currency} {formatAmount(tx.amount)}
                       </div>
 
                       <div className="flex justify-between items-center mb-2">
-                        <span
-                          className={`text-sm ${
-                            isDark ? "text-gray-400" : "text-gray-600"
-                          }`}
-                        >
+                        <span className="text-sm text-gray-600">
                           Fee ({bpsToPercent(feeBps)})
                         </span>
-                        <span
-                          className={`text-lg font-semibold ${
-                            isDark ? "text-gray-200" : "text-gray-800"
-                          }`}
-                        >
+                        <span className="text-lg font-semibold text-gray-800">
                           {formatAmount(feeAmount)}
                         </span>
                       </div>
 
-                      <div
-                        className={`text-sm ${
-                          isDark ? "text-gray-400" : "text-gray-600"
-                        }`}
-                      >
+                      <div className="text-sm text-gray-600">
                         {formatDate(tx.createdAt)}
                       </div>
                     </div>
@@ -521,11 +370,7 @@ export default function Question6Client() {
               {Object.entries(groupedData).map(([currency, paymentTypes]) => (
                 <div
                   key={currency}
-                  className={`rounded-lg border ${
-                    isDark
-                      ? "border-gray-700 bg-gray-750"
-                      : "border-gray-200 bg-gray-50"
-                  }`}
+                  className="rounded-lg border border-gray-200 bg-gray-50"
                 >
                   <button
                     onClick={() => toggleGroup(currency)}
@@ -535,7 +380,7 @@ export default function Question6Client() {
                       <svg
                         className={`w-5 h-5 transition-transform ${
                           expandedGroups.has(currency) ? "rotate-90" : ""
-                        } ${isDark ? "text-gray-400" : "text-gray-600"}`}
+                        } text-gray-600`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -547,11 +392,7 @@ export default function Question6Client() {
                           d="M9 5l7 7-7 7"
                         />
                       </svg>
-                      <span
-                        className={`text-lg font-bold ${
-                          isDark ? "text-white" : "text-gray-900"
-                        }`}
-                      >
+                      <span className="text-lg font-bold text-gray-900">
                         {currency}
                       </span>
                     </div>
@@ -563,11 +404,7 @@ export default function Question6Client() {
                         ([paymentType, schemes]) => (
                           <div
                             key={paymentType}
-                            className={`rounded-lg border ${
-                              isDark
-                                ? "border-gray-600 bg-gray-800"
-                                : "border-gray-300 bg-white"
-                            }`}
+                            className="rounded-lg border border-gray-300 bg-white"
                           >
                             <button
                               onClick={() =>
@@ -583,9 +420,7 @@ export default function Question6Client() {
                                     )
                                       ? "rotate-90"
                                       : ""
-                                  } ${
-                                    isDark ? "text-gray-500" : "text-gray-500"
-                                  }`}
+                                  } text-gray-500`}
                                   fill="none"
                                   stroke="currentColor"
                                   viewBox="0 0 24 24"
@@ -597,11 +432,7 @@ export default function Question6Client() {
                                     d="M9 5l7 7-7 7"
                                   />
                                 </svg>
-                                <span
-                                  className={`font-semibold capitalize ${
-                                    isDark ? "text-gray-200" : "text-gray-800"
-                                  }`}
-                                >
+                                <span className="font-semibold capitalize text-gray-800">
                                   {paymentType}
                                 </span>
                               </div>
@@ -615,53 +446,27 @@ export default function Question6Client() {
                                   ([scheme, data]) => (
                                     <div
                                       key={scheme}
-                                      className={`p-3 rounded ${
-                                        isDark ? "bg-gray-700" : "bg-gray-50"
-                                      }`}
+                                      className="p-3 rounded bg-gray-50"
                                     >
                                       <div className="flex items-center justify-between mb-2">
-                                        <span
-                                          className={`text-sm font-medium ${
-                                            isDark
-                                              ? "text-gray-300"
-                                              : "text-gray-700"
-                                          }`}
-                                        >
+                                        <span className="text-sm font-medium text-gray-700">
                                           {scheme === "none"
                                             ? "No Scheme"
                                             : scheme}
                                         </span>
-                                        <span
-                                          className={`text-xs px-2 py-1 rounded-full ${
-                                            isDark
-                                              ? "bg-gray-600 text-gray-300"
-                                              : "bg-gray-200 text-gray-600"
-                                          }`}
-                                        >
+                                        <span className="text-xs px-2 py-1 rounded-full bg-gray-200 text-gray-600">
                                           {data.count}{" "}
                                           {data.count === 1
                                             ? "transaction"
                                             : "transactions"}
                                         </span>
                                       </div>
-                                      <div
-                                        className={`grid grid-cols-2 gap-3 text-sm ${
-                                          isDark
-                                            ? "text-gray-400"
-                                            : "text-gray-600"
-                                        }`}
-                                      >
+                                      <div className="grid grid-cols-2 gap-3 text-sm text-gray-600">
                                         <div>
                                           <div className="text-xs opacity-75">
                                             Total Amount
                                           </div>
-                                          <div
-                                            className={`font-semibold ${
-                                              isDark
-                                                ? "text-gray-200"
-                                                : "text-gray-800"
-                                            }`}
-                                          >
+                                          <div className="font-semibold text-gray-800">
                                             {formatAmount(data.totalAmount)}
                                           </div>
                                         </div>
@@ -669,13 +474,7 @@ export default function Question6Client() {
                                           <div className="text-xs opacity-75">
                                             Total Fee
                                           </div>
-                                          <div
-                                            className={`font-semibold ${
-                                              isDark
-                                                ? "text-gray-200"
-                                                : "text-gray-800"
-                                            }`}
-                                          >
+                                          <div className="font-semibold text-gray-800">
                                             {formatAmount(data.totalFee)}
                                           </div>
                                         </div>
@@ -696,35 +495,19 @@ export default function Question6Client() {
           )}
         </div>
 
-        <div
-          className={`rounded-xl shadow-2xl p-8 mt-8 transition-colors ${
-            isDark ? "bg-gray-800" : "bg-white"
-          }`}
-        >
-          <h3
-            className={`text-2xl font-bold mb-4 ${
-              isDark ? "text-indigo-400" : "text-indigo-600"
-            }`}
-          >
+        <div className="rounded-xl shadow-2xl p-8 mt-8 bg-white">
+          <h3 className="text-2xl font-bold mb-4 text-indigo-600">
             Key Concepts Demonstrated
           </h3>
 
-          <div
-            className={`space-y-4 ${
-              isDark ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
+          <div className="space-y-4 text-gray-700">
             <div>
               <h4 className="font-semibold mb-2">
                 1. Pure Function for Aggregation
               </h4>
               <p>
                 The{" "}
-                <code
-                  className={`px-2 py-1 rounded text-sm ${
-                    isDark ? "bg-gray-700" : "bg-gray-100"
-                  }`}
-                >
+                <code className="px-2 py-1 rounded text-sm bg-gray-100">
                   groupedData
                 </code>{" "}
                 is built using useMemo with a pure function that creates nested
@@ -769,11 +552,7 @@ export default function Question6Client() {
               </h4>
               <p>
                 The view toggle button adapts to screen size with{" "}
-                <code
-                  className={`px-2 py-1 rounded text-sm ${
-                    isDark ? "bg-gray-700" : "bg-gray-100"
-                  }`}
-                >
+                <code className="px-2 py-1 rounded text-sm bg-gray-100">
                   w-full sm:w-auto
                 </code>
                 , taking full width on mobile for better touch targets.
@@ -782,24 +561,12 @@ export default function Question6Client() {
           </div>
         </div>
 
-        <div
-          className={`rounded-xl shadow-2xl p-8 mt-8 transition-colors ${
-            isDark ? "bg-gray-800" : "bg-white"
-          }`}
-        >
-          <h3
-            className={`text-2xl font-bold mb-4 ${
-              isDark ? "text-indigo-400" : "text-indigo-600"
-            }`}
-          >
+        <div className="rounded-xl shadow-2xl p-8 mt-8 bg-white">
+          <h3 className="text-2xl font-bold mb-4 text-indigo-600">
             Follow-up Discussion
           </h3>
 
-          <div
-            className={`space-y-4 ${
-              isDark ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
+          <div className="space-y-4 text-gray-700">
             <div>
               <h4 className="font-semibold mb-2">
                 When to Move Aggregation Server-Side?

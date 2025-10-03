@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { useState, useTransition, useOptimistic } from "react";
+import { useTransition, useOptimistic } from "react";
 import { useTransactions } from "@/lib/hooks/use-transactions";
 import { bpsToPercent, calcFeeAmount, getFeeBps } from "@/lib/utils/fee-utils";
 import type { TransactionResponse, Transaction } from "@/lib/types/transaction";
@@ -16,7 +16,6 @@ type Currency = "ZAR" | "USD" | "EUR" | undefined;
 type PaymentType = "card" | "bank" | "wallet" | undefined;
 
 export default function Question7Client({ initialData }: Question7ClientProps) {
-  const [isDark, setIsDark] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -137,59 +136,12 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
   const currentPage = searchParams.get("cursor") ? 2 : 1;
 
   return (
-    <div
-      className={`min-h-screen py-12 px-4 transition-colors duration-300 ${
-        isDark ? "bg-gray-900" : "bg-gray-50"
-      }`}
-    >
+    <div className="min-h-screen py-12 px-4 bg-gray-50">
       <div className="max-w-7xl mx-auto">
-        {/* Theme Toggle */}
-        <button
-          onClick={() => setIsDark(!isDark)}
-          className={`fixed top-6 right-6 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-50 ${
-            isDark ? "bg-gray-700 text-yellow-400" : "bg-white text-gray-800"
-          }`}
-          aria-label="Toggle theme"
-        >
-          {isDark ? (
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-              />
-            </svg>
-          ) : (
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-              />
-            </svg>
-          )}
-        </button>
-
         {/* Back Button */}
         <Link
           href="/"
-          className={`inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-lg transition-colors ${
-            isDark
-              ? "bg-gray-800 text-gray-200 hover:bg-gray-700"
-              : "bg-white text-gray-700 hover:bg-gray-100"
-          }`}
+          className="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-lg transition-colors bg-white text-gray-700 hover:bg-gray-100"
         >
           <svg
             className="w-5 h-5"
@@ -208,17 +160,9 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
         </Link>
 
         {/* Question Header */}
-        <div
-          className={`rounded-xl shadow-2xl p-8 mb-8 transition-colors ${
-            isDark ? "bg-gray-800" : "bg-white"
-          }`}
-        >
+        <div className="rounded-xl shadow-2xl p-8 mb-8 bg-white">
           <div className="flex items-center gap-3 mb-4">
-            <span
-              className={`text-4xl font-bold ${
-                isDark ? "text-indigo-400" : "text-indigo-600"
-              }`}
-            >
+            <span className="text-4xl font-bold text-indigo-600">
               Question 7
             </span>
             <span className="px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-800">
@@ -226,19 +170,11 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
             </span>
           </div>
 
-          <h2
-            className={`text-3xl font-bold mb-4 ${
-              isDark ? "text-white" : "text-gray-800"
-            }`}
-          >
+          <h2 className="text-3xl font-bold mb-4 text-gray-800">
             Server Data, Caching, and URL State
           </h2>
 
-          <div
-            className={`space-y-4 ${
-              isDark ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
+          <div className="space-y-4 text-gray-700">
             <p className="text-lg">
               <span className="font-semibold">What you need to do:</span> Move
               to server-side rendering with cursor pagination, URL-driven
@@ -261,26 +197,12 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
         </div>
 
         {/* Solution */}
-        <div
-          className={`rounded-xl shadow-2xl p-4 md:p-8 transition-colors ${
-            isDark ? "bg-gray-800" : "bg-white"
-          }`}
-        >
-          <h3
-            className={`text-2xl font-bold mb-6 ${
-              isDark ? "text-indigo-400" : "text-indigo-600"
-            }`}
-          >
-            Solution
-          </h3>
+        <div className="rounded-xl shadow-2xl p-4 md:p-8 bg-white">
+          <h3 className="text-2xl font-bold mb-6 text-indigo-600">Solution</h3>
 
           {/* Currency Filter */}
           <div className="mb-4">
-            <label
-              className={`block text-sm font-semibold mb-2 ${
-                isDark ? "text-gray-300" : "text-gray-700"
-              }`}
-            >
+            <label className="block text-sm font-semibold mb-2 text-gray-700">
               Filter by Currency
             </label>
             <div className="flex gap-2 flex-wrap">
@@ -301,8 +223,6 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                         : optimisticFilters.currency === currency
                     )
                       ? "bg-indigo-600 text-white shadow-md hover:bg-indigo-700"
-                      : isDark
-                      ? "bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600"
                       : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
                   } ${isPending ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
@@ -314,11 +234,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
 
           {/* Payment Type Filter */}
           <div className="mb-6">
-            <label
-              className={`block text-sm font-semibold mb-2 ${
-                isDark ? "text-gray-300" : "text-gray-700"
-              }`}
-            >
+            <label className="block text-sm font-semibold mb-2 text-gray-700">
               Filter by Payment Type
             </label>
             <div className="flex gap-2 flex-wrap">
@@ -340,8 +256,6 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                         : optimisticFilters.paymentType === paymentType
                     )
                       ? "bg-emerald-600 text-white shadow-md hover:bg-emerald-700"
-                      : isDark
-                      ? "bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600"
                       : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
                   } ${isPending ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
@@ -352,11 +266,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
           </div>
 
           {/* Info Bar */}
-          <div
-            className={`mb-4 text-sm font-medium ${
-              isDark ? "text-gray-400" : "text-gray-600"
-            }`}
-          >
+          <div className="mb-4 text-sm font-medium text-gray-600">
             Showing {transactionData?.data.length || 0} of{" "}
             {transactionData?.pagination.total || 0} transactions
           </div>
@@ -368,11 +278,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
               <p>Loading transactions...</p>
             </div>
           ) : transactionData?.data.length === 0 ? (
-            <div
-              className={`py-20 text-center ${
-                isDark ? "text-gray-400" : "text-gray-500"
-              }`}
-            >
+            <div className="py-20 text-center text-gray-500">
               <svg
                 className="mx-auto h-16 w-16 mb-4 opacity-40"
                 fill="none"
@@ -397,51 +303,23 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full border-collapse">
                   <thead>
-                    <tr
-                      className={`border-b-2 ${
-                        isDark ? "border-gray-700" : "border-gray-200"
-                      }`}
-                    >
-                      <th
-                        className={`text-left py-3 px-4 font-semibold ${
-                          isDark ? "text-gray-200" : "text-gray-700"
-                        }`}
-                      >
+                    <tr className="border-b-2 border-gray-200">
+                      <th className="text-left py-3 px-4 font-semibold text-gray-700">
                         ID
                       </th>
-                      <th
-                        className={`text-left py-3 px-4 font-semibold ${
-                          isDark ? "text-gray-200" : "text-gray-700"
-                        }`}
-                      >
+                      <th className="text-left py-3 px-4 font-semibold text-gray-700">
                         Date
                       </th>
-                      <th
-                        className={`text-right py-3 px-4 font-semibold ${
-                          isDark ? "text-gray-200" : "text-gray-700"
-                        }`}
-                      >
+                      <th className="text-right py-3 px-4 font-semibold text-gray-700">
                         Amount
                       </th>
-                      <th
-                        className={`text-left py-3 px-4 font-semibold ${
-                          isDark ? "text-gray-200" : "text-gray-700"
-                        }`}
-                      >
+                      <th className="text-left py-3 px-4 font-semibold text-gray-700">
                         Currency
                       </th>
-                      <th
-                        className={`text-left py-3 px-4 font-semibold ${
-                          isDark ? "text-gray-200" : "text-gray-700"
-                        }`}
-                      >
+                      <th className="text-left py-3 px-4 font-semibold text-gray-700">
                         Payment Type
                       </th>
-                      <th
-                        className={`text-right py-3 px-4 font-semibold ${
-                          isDark ? "text-gray-200" : "text-gray-700"
-                        }`}
-                      >
+                      <th className="text-right py-3 px-4 font-semibold text-gray-700">
                         Fee
                       </th>
                     </tr>
@@ -455,38 +333,18 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                       return (
                         <tr
                           key={tx.id}
-                          className={`border-b transition-colors ${
-                            isDark
-                              ? "border-gray-700 hover:bg-gray-750"
-                              : "border-gray-100 hover:bg-gray-50"
-                          }`}
+                          className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                         >
-                          <td
-                            className={`py-3 px-4 font-mono text-sm ${
-                              isDark ? "text-gray-300" : "text-gray-600"
-                            }`}
-                          >
+                          <td className="py-3 px-4 font-mono text-sm text-gray-600">
                             {tx.id}
                           </td>
-                          <td
-                            className={`py-3 px-4 ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
+                          <td className="py-3 px-4 text-gray-700">
                             {formatDate(tx.createdAt)}
                           </td>
-                          <td
-                            className={`py-3 px-4 text-right font-semibold ${
-                              isDark ? "text-gray-200" : "text-gray-800"
-                            }`}
-                          >
+                          <td className="py-3 px-4 text-right font-semibold text-gray-800">
                             {formatAmount(tx.amount)}
                           </td>
-                          <td
-                            className={`py-3 px-4 ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
+                          <td className="py-3 px-4 text-gray-700">
                             {tx.currency}
                           </td>
                           <td className="py-3 px-4">
@@ -502,11 +360,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                               {tx.paymentType}
                             </span>
                           </td>
-                          <td
-                            className={`py-3 px-4 text-right ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
+                          <td className="py-3 px-4 text-right text-gray-700">
                             <div className="flex flex-col items-end gap-1">
                               <div className="flex items-center gap-2">
                                 <span className="text-xs text-gray-500">
@@ -540,18 +394,10 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                   return (
                     <div
                       key={tx.id}
-                      className={`rounded-lg p-4 border transition-colors ${
-                        isDark
-                          ? "bg-gray-750 border-gray-700"
-                          : "bg-gray-50 border-gray-200"
-                      }`}
+                      className="rounded-lg p-4 border bg-gray-50 border-gray-200"
                     >
                       <div className="flex justify-between items-start mb-3">
-                        <span
-                          className={`font-mono text-sm font-semibold ${
-                            isDark ? "text-indigo-400" : "text-indigo-600"
-                          }`}
-                        >
+                        <span className="font-mono text-sm font-semibold text-indigo-600">
                           {tx.id}
                         </span>
                         <div className="flex items-center gap-2">
@@ -574,36 +420,20 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                         </div>
                       </div>
 
-                      <div
-                        className={`text-2xl font-bold mb-2 ${
-                          isDark ? "text-gray-200" : "text-gray-800"
-                        }`}
-                      >
+                      <div className="text-2xl font-bold mb-2 text-gray-800">
                         {tx.currency} {formatAmount(tx.amount)}
                       </div>
 
                       <div className="flex justify-between items-center mb-2">
-                        <span
-                          className={`text-sm ${
-                            isDark ? "text-gray-400" : "text-gray-600"
-                          }`}
-                        >
+                        <span className="text-sm text-gray-600">
                           Fee ({bpsToPercent(feeBps)})
                         </span>
-                        <span
-                          className={`text-lg font-semibold ${
-                            isDark ? "text-gray-200" : "text-gray-800"
-                          }`}
-                        >
+                        <span className="text-lg font-semibold text-gray-800">
                           {formatAmount(feeAmount)}
                         </span>
                       </div>
 
-                      <div
-                        className={`text-sm ${
-                          isDark ? "text-gray-400" : "text-gray-600"
-                        }`}
-                      >
+                      <div className="text-sm text-gray-600">
                         {formatDate(tx.createdAt)}
                       </div>
                     </div>
@@ -624,22 +454,12 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                 currentPage === 1 || isPending
                   ? "opacity-50 cursor-not-allowed"
                   : ""
-              } ${
-                isDark
-                  ? "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-              }`}
+              } bg-white text-gray-700 border border-gray-300 hover:bg-gray-50`}
             >
               ← Previous
             </button>
 
-            <span
-              className={`text-sm ${
-                isDark ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
-              Page {currentPage}
-            </span>
+            <span className="text-sm text-gray-600">Page {currentPage}</span>
 
             <button
               onClick={handleNextPage}
@@ -648,11 +468,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                 !transactionData?.pagination.hasMore || isPending
                   ? "opacity-50 cursor-not-allowed"
                   : ""
-              } ${
-                isDark
-                  ? "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-              }`}
+              } bg-white text-gray-700 border border-gray-300 hover:bg-gray-50`}
             >
               Next →
             </button>
@@ -660,24 +476,12 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
         )}
 
         {/* Key Concepts */}
-        <div
-          className={`rounded-xl shadow-2xl p-8 mt-8 transition-colors ${
-            isDark ? "bg-gray-800" : "bg-white"
-          }`}
-        >
-          <h3
-            className={`text-2xl font-bold mb-4 ${
-              isDark ? "text-indigo-400" : "text-indigo-600"
-            }`}
-          >
+        <div className="rounded-xl shadow-2xl p-8 mt-8 bg-white">
+          <h3 className="text-2xl font-bold mb-4 text-indigo-600">
             Key Concepts Demonstrated
           </h3>
 
-          <div
-            className={`space-y-4 ${
-              isDark ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
+          <div className="space-y-4 text-gray-700">
             <div>
               <h4 className="font-semibold mb-2">
                 1. Server Components vs Client Components
