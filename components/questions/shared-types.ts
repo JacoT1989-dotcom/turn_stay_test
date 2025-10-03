@@ -1,4 +1,7 @@
-// components\questions\(question2-client-group)\question2-types.ts
+// components/questions/shared/types.ts
+
+export type Country = "All" | "ZA" | "US" | "EUR";
+export type PaymentType = "All" | "card" | "bank" | "wallet";
 
 export type Tx = {
   id: string;
@@ -10,11 +13,6 @@ export type Tx = {
   fee?: number;
 };
 
-export type Country = "All" | "ZA" | "US" | "EUR";
-
-/**
- * Map country codes to their currencies
- */
 export const countryCurrencyMap: Record<
   string,
   { code: string; locale: string }

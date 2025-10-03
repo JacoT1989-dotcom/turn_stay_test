@@ -1,6 +1,6 @@
 // utils/formatters.ts
 
-import { countryCurrencyMap } from "./(question2-client-group)/question2-types";
+import { countryCurrencyMap } from "./shared-types";
 
 /**
  * Format amount from minor units (cents) to major units with currency symbol

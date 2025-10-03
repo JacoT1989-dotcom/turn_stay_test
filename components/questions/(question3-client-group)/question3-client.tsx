@@ -1,17 +1,17 @@
-// components/question3-client.tsx
-"use client";
+// components/questions/(question3-client-group)/question3-client.tsx
 
+"use client";
 import Link from "next/link";
 import { useState, useMemo } from "react";
-import { Country, PaymentType } from "./question3-types";
 import {
   formatAmount,
   formatDate,
   getCurrencyFromCountry,
 } from "../formatters";
-import CurrencyFilter from "./CurrencyFilter";
 import PaymentTypeFilter from "./PaymentTypeFilter";
 import { transactions } from "./transactions-data";
+import { Country, PaymentType } from "../shared-types";
+import CurrencyFilter from "../CurrencyFilter";
 
 const countries: Country[] = ["All", "ZA", "US", "EUR"];
 const paymentTypes: PaymentType[] = ["All", "card", "bank", "wallet"];
@@ -114,6 +114,8 @@ export default function Question3Client() {
               selectedCountry={selectedCountry}
               onCountryChange={setSelectedCountry}
               countries={countries}
+              variant="buttons"
+              showLabel={true}
             />
           </div>
 

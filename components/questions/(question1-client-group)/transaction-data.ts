@@ -1,6 +1,6 @@
 // components\questions\(question1-client-group)\transaction-data.ts
 
-import { Tx } from "./question1-types";
+import { Tx } from "../shared-types";
 
 export const transactions: Tx[] = [
   {

@@ -1,6 +1,6 @@
 // components\questions\(question3-client-group)\PaymentTypeFilter.tsx
 
-import { PaymentType } from "./question3-types";
+import { PaymentType } from "../shared-types";
 
 interface PaymentTypeFilterProps {
   selectedPaymentType: PaymentType;

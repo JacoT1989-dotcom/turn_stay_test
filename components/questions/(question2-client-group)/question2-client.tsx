@@ -1,16 +1,16 @@
-// components\questions\(question2-client-group)\question2-client.tsx
+// components/questions/(question2-client-group)/question2-client.tsx
 
 "use client";
 import Link from "next/link";
 import { useState, useMemo } from "react";
-import { Country } from "./question2-types";
 import { transactions } from "./transactions-data";
 import {
   formatAmount,
   formatDate,
   getCurrencyFromCountry,
 } from "../formatters";
-import CurrencyFilter from "./CurrencyFilter";
+import { Country } from "../shared-types";
+import CurrencyFilter from "../CurrencyFilter";
 
 const countries: Country[] = ["All", "ZA", "US", "EUR"];
 
@@ -122,6 +122,7 @@ export default function Question2Client() {
               onCountryChange={setSelectedCountry}
               countries={countries}
               transactionCounts={transactionCounts}
+              variant="tabs"
             />
 
             <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
