@@ -276,9 +276,9 @@ export default function Question8Client() {
           </div>
         </div>
 
-        {/* Transactions Table */}
+        {/* Transactions Table/Cards */}
         <div
-          className={`rounded-xl shadow-2xl p-8 transition-colors ${
+          className={`rounded-xl shadow-2xl p-4 md:p-8 transition-colors ${
             isDark ? "bg-gray-800" : "bg-white"
           }`}
         >
@@ -290,7 +290,8 @@ export default function Question8Client() {
             Transactions with Policy Resolution
           </h3>
 
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
                 <tr
@@ -446,6 +447,98 @@ export default function Question8Client() {
               </tbody>
             </table>
           </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-4">
+            {transactionsWithPolicy.map(({ transaction: tx, resolution }) => (
+              <div
+                key={tx.id}
+                className={`rounded-lg p-4 border transition-colors ${
+                  isDark
+                    ? "bg-gray-750 border-gray-700"
+                    : "bg-gray-50 border-gray-200"
+                }`}
+              >
+                <div className="flex justify-between items-start mb-3">
+                  <span
+                    className={`font-mono text-sm font-semibold ${
+                      isDark ? "text-indigo-400" : "text-indigo-600"
+                    }`}
+                  >
+                    {tx.id}
+                  </span>
+                  <div className="flex items-center gap-2 flex-wrap justify-end">
+                    {resolution.finalRule && (
+                      <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                        policy
+                      </span>
+                    )}
+                    {resolution.conflict && (
+                      <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                        conflict
+                      </span>
+                    )}
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        tx.paymentType === "card"
+                          ? "bg-blue-100 text-blue-800"
+                          : tx.paymentType === "bank"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-purple-100 text-purple-800"
+                      }`}
+                    >
+                      {tx.paymentType}
+                      {tx.scheme && ` • ${tx.scheme}`}
+                    </span>
+                  </div>
+                </div>
+
+                <div
+                  className={`text-2xl font-bold mb-2 ${
+                    isDark ? "text-gray-200" : "text-gray-800"
+                  }`}
+                >
+                  {tx.currency} {formatAmount(tx.amount)}
+                </div>
+
+                <div className="flex justify-between items-center mb-2">
+                  <span
+                    className={`text-sm ${
+                      isDark ? "text-gray-400" : "text-gray-600"
+                    }`}
+                  >
+                    Fee ({(resolution.feeBps / 100).toFixed(2)}%)
+                  </span>
+                  <span
+                    className={`text-lg font-semibold ${
+                      isDark ? "text-gray-200" : "text-gray-800"
+                    }`}
+                  >
+                    {formatAmount(resolution.feeAmount)}
+                  </span>
+                </div>
+
+                <div
+                  className={`text-sm mb-3 ${
+                    isDark ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  {formatDate(tx.createdAt)}
+                </div>
+
+                <button
+                  onClick={() => setSelectedTransaction(tx.id)}
+                  className={`w-full px-4 py-2.5 rounded-lg font-semibold transition-all shadow-md ${
+                    isDark
+                      ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                      : "bg-indigo-600 text-white hover:bg-indigo-700"
+                  }`}
+                >
+                  📊 Explain This Fee
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Explainability Modal */}
@@ -455,14 +548,14 @@ export default function Question8Client() {
             onClick={() => setSelectedTransaction(null)}
           >
             <div
-              className={`rounded-xl shadow-2xl p-8 max-w-3xl w-full max-h-[80vh] overflow-y-auto ${
+              className={`rounded-xl shadow-2xl p-6 md:p-8 max-w-3xl w-full max-h-[80vh] overflow-y-auto ${
                 isDark ? "bg-gray-800" : "bg-white"
               }`}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
                 <h3
-                  className={`text-2xl font-bold ${
+                  className={`text-xl md:text-2xl font-bold ${
                     isDark ? "text-indigo-400" : "text-indigo-600"
                   }`}
                 >
@@ -484,7 +577,7 @@ export default function Question8Client() {
                   isDark ? "bg-gray-700" : "bg-gray-50"
                 }`}
               >
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <div className="text-sm text-gray-500">Amount</div>
                     <div
@@ -727,7 +820,16 @@ export default function Question8Client() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">5. Tenant Isolation</h4>
+              <h4 className="font-semibold mb-2">5. Responsive Modal Design</h4>
+              <p>
+                The explainability modal adapts for mobile with reduced padding,
+                responsive grid layouts, and full-screen presentation on small
+                devices for optimal readability.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-2">6. Tenant Isolation</h4>
               <p>
                 Each tenant has independent policies. In production, this would
                 be stored per tenant in the database with versioning for audit
@@ -736,7 +838,7 @@ export default function Question8Client() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">6. Date-Based Rules</h4>
+              <h4 className="font-semibold mb-2">7. Date-Based Rules</h4>
               <p>
                 Rules can have effectiveFrom/effectiveTo dates for time-limited
                 promotions. The resolver automatically excludes expired or
