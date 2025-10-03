@@ -208,13 +208,13 @@ export default function HomeClient({ questions }: HomeClientProps) {
           >
             Scoring Bands
           </h2>
-          <div className="space-y-4">
-            <div className="flex items-start gap-3">
-              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 mt-1">
+          <div className="space-y-6">
+            <div>
+              <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 mb-2">
                 Junior (1-2)
               </span>
               <p
-                className={`flex-1 transition-colors ${
+                className={`transition-colors ${
                   isDark ? "text-gray-300" : "text-gray-700"
                 }`}
               >
@@ -222,12 +222,12 @@ export default function HomeClient({ questions }: HomeClientProps) {
                 Understands state and keys.
               </p>
             </div>
-            <div className="flex items-start gap-3">
-              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 mt-1">
+            <div>
+              <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 mb-2">
                 Intermediate (3-5)
               </span>
               <p
-                className={`flex-1 transition-colors ${
+                className={`transition-colors ${
                   isDark ? "text-gray-300" : "text-gray-700"
                 }`}
               >
@@ -236,12 +236,12 @@ export default function HomeClient({ questions }: HomeClientProps) {
                 small perf wins.
               </p>
             </div>
-            <div className="flex items-start gap-3">
-              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-800 mt-1">
+            <div>
+              <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-800 mb-2">
                 Senior (5-6)
               </span>
               <p
-                className={`flex-1 transition-colors ${
+                className={`transition-colors ${
                   isDark ? "text-gray-300" : "text-gray-700"
                 }`}
               >
@@ -250,12 +250,12 @@ export default function HomeClient({ questions }: HomeClientProps) {
                 server-side and how.
               </p>
             </div>
-            <div className="flex items-start gap-3">
-              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800 mt-1">
+            <div>
+              <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800 mb-2">
                 Principal (7-8)
               </span>
               <p
-                className={`flex-1 transition-colors ${
+                className={`transition-colors ${
                   isDark ? "text-gray-300" : "text-gray-700"
                 }`}
               >
