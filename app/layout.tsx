@@ -9,6 +9,16 @@ export const metadata: Metadata = {
   title: "Frontend Engineering Interview - Jaco Thiart",
   description:
     "Transaction Management System built with Next.js, TypeScript, and TailwindCSS",
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true,
+    },
+  },
 };
 
 export default function RootLayout({
