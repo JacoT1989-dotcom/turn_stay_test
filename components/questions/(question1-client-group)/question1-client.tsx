@@ -2,81 +2,10 @@
 "use client";
 
 import Link from "next/link";
-
-type Tx = {
-  id: string;
-  amount: number; // in minor units (cents)
-  currency: "ZAR" | "USD" | "EUR";
-  paymentType: "card" | "bank" | "wallet";
-  scheme?: "visa" | "mastercard" | "amex";
-  createdAt: string; // ISO
-  fee?: number;
-};
-
-const transactions: Tx[] = [
-  {
-    id: "t_1",
-    amount: 125000,
-    currency: "ZAR",
-    paymentType: "card",
-    scheme: "visa",
-    createdAt: "2025-09-10T10:00:00Z",
-  },
-  {
-    id: "t_2",
-    amount: 56000,
-    currency: "USD",
-    paymentType: "card",
-    scheme: "mastercard",
-    createdAt: "2025-09-11T12:15:00Z",
-    fee: 290,
-  },
-  {
-    id: "t_3",
-    amount: 99000,
-    currency: "ZAR",
-    paymentType: "bank",
-    createdAt: "2025-09-12T09:30:00Z",
-  },
-  {
-    id: "t_4",
-    amount: 45000,
-    currency: "EUR",
-    paymentType: "wallet",
-    createdAt: "2025-09-12T10:05:00Z",
-  },
-  {
-    id: "t_5",
-    amount: 200000,
-    currency: "ZAR",
-    paymentType: "card",
-    scheme: "amex",
-    createdAt: "2025-09-12T12:00:00Z",
-  },
-];
+import { transactions } from "./transaction-data";
+import { formatAmount, formatDate } from "./formatters";
 
 export default function Question1Client() {
-  // Format amount from minor units (cents) to major units with thousand separators
-  const formatAmount = (amount: number): string => {
-    const majorUnits = amount / 100;
-    return majorUnits.toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-  };
-
-  // Format ISO date to readable format
-  const formatDate = (isoDate: string): string => {
-    const date = new Date(isoDate);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
   return (
     <div className="min-h-screen py-12 px-4 bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto">
