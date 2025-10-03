@@ -262,7 +262,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
 
         {/* Solution */}
         <div
-          className={`rounded-xl shadow-2xl p-8 transition-colors ${
+          className={`rounded-xl shadow-2xl p-4 md:p-8 transition-colors ${
             isDark ? "bg-gray-800" : "bg-white"
           }`}
         >
@@ -294,7 +294,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                     })
                   }
                   disabled={isPending}
-                  className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+                  className={`px-3 md:px-4 py-2 rounded-lg font-medium text-sm transition-all ${
                     (
                       currency === "All"
                         ? !optimisticFilters.currency
@@ -333,7 +333,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                     })
                   }
                   disabled={isPending}
-                  className={`px-4 py-2 rounded-lg font-medium text-sm transition-all capitalize ${
+                  className={`px-3 md:px-4 py-2 rounded-lg font-medium text-sm transition-all capitalize ${
                     (
                       paymentType === "All"
                         ? !optimisticFilters.paymentType
@@ -392,102 +392,174 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr
-                    className={`border-b-2 ${
-                      isDark ? "border-gray-700" : "border-gray-200"
-                    }`}
-                  >
-                    <th
-                      className={`text-left py-3 px-4 font-semibold ${
-                        isDark ? "text-gray-200" : "text-gray-700"
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr
+                      className={`border-b-2 ${
+                        isDark ? "border-gray-700" : "border-gray-200"
                       }`}
                     >
-                      ID
-                    </th>
-                    <th
-                      className={`text-left py-3 px-4 font-semibold ${
-                        isDark ? "text-gray-200" : "text-gray-700"
-                      }`}
-                    >
-                      Date
-                    </th>
-                    <th
-                      className={`text-right py-3 px-4 font-semibold ${
-                        isDark ? "text-gray-200" : "text-gray-700"
-                      }`}
-                    >
-                      Amount
-                    </th>
-                    <th
-                      className={`text-left py-3 px-4 font-semibold ${
-                        isDark ? "text-gray-200" : "text-gray-700"
-                      }`}
-                    >
-                      Currency
-                    </th>
-                    <th
-                      className={`text-left py-3 px-4 font-semibold ${
-                        isDark ? "text-gray-200" : "text-gray-700"
-                      }`}
-                    >
-                      Payment Type
-                    </th>
-                    <th
-                      className={`text-right py-3 px-4 font-semibold ${
-                        isDark ? "text-gray-200" : "text-gray-700"
-                      }`}
-                    >
-                      Fee
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {transactionData?.data.map((tx: Transaction) => {
-                    const feeBps = getFeeBps(tx);
-                    const feeAmount = calcFeeAmount(tx.amount, feeBps);
-                    const isOverride = hasOverride(tx);
-
-                    return (
-                      <tr
-                        key={tx.id}
-                        className={`border-b transition-colors ${
-                          isDark
-                            ? "border-gray-700 hover:bg-gray-750"
-                            : "border-gray-100 hover:bg-gray-50"
+                      <th
+                        className={`text-left py-3 px-4 font-semibold ${
+                          isDark ? "text-gray-200" : "text-gray-700"
                         }`}
                       >
-                        <td
-                          className={`py-3 px-4 font-mono text-sm ${
-                            isDark ? "text-gray-300" : "text-gray-600"
+                        ID
+                      </th>
+                      <th
+                        className={`text-left py-3 px-4 font-semibold ${
+                          isDark ? "text-gray-200" : "text-gray-700"
+                        }`}
+                      >
+                        Date
+                      </th>
+                      <th
+                        className={`text-right py-3 px-4 font-semibold ${
+                          isDark ? "text-gray-200" : "text-gray-700"
+                        }`}
+                      >
+                        Amount
+                      </th>
+                      <th
+                        className={`text-left py-3 px-4 font-semibold ${
+                          isDark ? "text-gray-200" : "text-gray-700"
+                        }`}
+                      >
+                        Currency
+                      </th>
+                      <th
+                        className={`text-left py-3 px-4 font-semibold ${
+                          isDark ? "text-gray-200" : "text-gray-700"
+                        }`}
+                      >
+                        Payment Type
+                      </th>
+                      <th
+                        className={`text-right py-3 px-4 font-semibold ${
+                          isDark ? "text-gray-200" : "text-gray-700"
+                        }`}
+                      >
+                        Fee
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {transactionData?.data.map((tx: Transaction) => {
+                      const feeBps = getFeeBps(tx);
+                      const feeAmount = calcFeeAmount(tx.amount, feeBps);
+                      const isOverride = hasOverride(tx);
+
+                      return (
+                        <tr
+                          key={tx.id}
+                          className={`border-b transition-colors ${
+                            isDark
+                              ? "border-gray-700 hover:bg-gray-750"
+                              : "border-gray-100 hover:bg-gray-50"
+                          }`}
+                        >
+                          <td
+                            className={`py-3 px-4 font-mono text-sm ${
+                              isDark ? "text-gray-300" : "text-gray-600"
+                            }`}
+                          >
+                            {tx.id}
+                          </td>
+                          <td
+                            className={`py-3 px-4 ${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            }`}
+                          >
+                            {formatDate(tx.createdAt)}
+                          </td>
+                          <td
+                            className={`py-3 px-4 text-right font-semibold ${
+                              isDark ? "text-gray-200" : "text-gray-800"
+                            }`}
+                          >
+                            {formatAmount(tx.amount)}
+                          </td>
+                          <td
+                            className={`py-3 px-4 ${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            }`}
+                          >
+                            {tx.currency}
+                          </td>
+                          <td className="py-3 px-4">
+                            <span
+                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                tx.paymentType === "card"
+                                  ? "bg-blue-100 text-blue-800"
+                                  : tx.paymentType === "bank"
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-purple-100 text-purple-800"
+                              }`}
+                            >
+                              {tx.paymentType}
+                            </span>
+                          </td>
+                          <td
+                            className={`py-3 px-4 text-right ${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            }`}
+                          >
+                            <div className="flex flex-col items-end gap-1">
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs text-gray-500">
+                                  {bpsToPercent(feeBps)}
+                                </span>
+                                {isOverride && (
+                                  <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800">
+                                    override
+                                  </span>
+                                )}
+                              </div>
+                              <span className="font-semibold">
+                                {formatAmount(feeAmount)}
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden space-y-4">
+                {transactionData?.data.map((tx: Transaction) => {
+                  const feeBps = getFeeBps(tx);
+                  const feeAmount = calcFeeAmount(tx.amount, feeBps);
+                  const isOverride = hasOverride(tx);
+
+                  return (
+                    <div
+                      key={tx.id}
+                      className={`rounded-lg p-4 border transition-colors ${
+                        isDark
+                          ? "bg-gray-750 border-gray-700"
+                          : "bg-gray-50 border-gray-200"
+                      }`}
+                    >
+                      <div className="flex justify-between items-start mb-3">
+                        <span
+                          className={`font-mono text-sm font-semibold ${
+                            isDark ? "text-indigo-400" : "text-indigo-600"
                           }`}
                         >
                           {tx.id}
-                        </td>
-                        <td
-                          className={`py-3 px-4 ${
-                            isDark ? "text-gray-300" : "text-gray-700"
-                          }`}
-                        >
-                          {formatDate(tx.createdAt)}
-                        </td>
-                        <td
-                          className={`py-3 px-4 text-right font-semibold ${
-                            isDark ? "text-gray-200" : "text-gray-800"
-                          }`}
-                        >
-                          {formatAmount(tx.amount)}
-                        </td>
-                        <td
-                          className={`py-3 px-4 ${
-                            isDark ? "text-gray-300" : "text-gray-700"
-                          }`}
-                        >
-                          {tx.currency}
-                        </td>
-                        <td className="py-3 px-4">
+                        </span>
+                        <div className="flex items-center gap-2">
+                          {isOverride && (
+                            <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800">
+                              override
+                            </span>
+                          )}
                           <span
                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                               tx.paymentType === "card"
@@ -499,44 +571,56 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                           >
                             {tx.paymentType}
                           </span>
-                        </td>
-                        <td
-                          className={`py-3 px-4 text-right ${
-                            isDark ? "text-gray-300" : "text-gray-700"
+                        </div>
+                      </div>
+
+                      <div
+                        className={`text-2xl font-bold mb-2 ${
+                          isDark ? "text-gray-200" : "text-gray-800"
+                        }`}
+                      >
+                        {tx.currency} {formatAmount(tx.amount)}
+                      </div>
+
+                      <div className="flex justify-between items-center mb-2">
+                        <span
+                          className={`text-sm ${
+                            isDark ? "text-gray-400" : "text-gray-600"
                           }`}
                         >
-                          <div className="flex flex-col items-end gap-1">
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs text-gray-500">
-                                {bpsToPercent(feeBps)}
-                              </span>
-                              {isOverride && (
-                                <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800">
-                                  override
-                                </span>
-                              )}
-                            </div>
-                            <span className="font-semibold">
-                              {formatAmount(feeAmount)}
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+                          Fee ({bpsToPercent(feeBps)})
+                        </span>
+                        <span
+                          className={`text-lg font-semibold ${
+                            isDark ? "text-gray-200" : "text-gray-800"
+                          }`}
+                        >
+                          {formatAmount(feeAmount)}
+                        </span>
+                      </div>
+
+                      <div
+                        className={`text-sm ${
+                          isDark ? "text-gray-400" : "text-gray-600"
+                        }`}
+                      >
+                        {formatDate(tx.createdAt)}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
           )}
         </div>
 
         {/* Pagination - Below the table card */}
         {transactionData && transactionData.data.length > 0 && (
-          <div className="mt-6 flex items-center justify-between">
+          <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <button
               onClick={handlePreviousPage}
               disabled={currentPage === 1 || isPending}
-              className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+              className={`w-full sm:w-auto px-4 py-2 rounded-lg font-medium text-sm transition-all ${
                 currentPage === 1 || isPending
                   ? "opacity-50 cursor-not-allowed"
                   : ""
@@ -560,7 +644,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
             <button
               onClick={handleNextPage}
               disabled={!transactionData?.pagination.hasMore || isPending}
-              className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+              className={`w-full sm:w-auto px-4 py-2 rounded-lg font-medium text-sm transition-all ${
                 !transactionData?.pagination.hasMore || isPending
                   ? "opacity-50 cursor-not-allowed"
                   : ""
@@ -646,8 +730,18 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
             </div>
 
             <div>
+              <h4 className="font-semibold mb-2">6. Responsive Design</h4>
+              <p>
+                Table view on desktop, card view on mobile. Pagination buttons
+                stack vertically on mobile with full-width buttons for better
+                touch targets, then switch to horizontal layout on larger
+                screens.
+              </p>
+            </div>
+
+            <div>
               <h4 className="font-semibold mb-2">
-                6. Multi-Layer Caching Strategy
+                7. Multi-Layer Caching Strategy
               </h4>
               <p>
                 Three layers: (1) HTTP cache at CDN/edge, (2) Next.js fetch
