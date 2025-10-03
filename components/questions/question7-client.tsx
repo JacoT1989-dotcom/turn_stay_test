@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { useTransition, useOptimistic } from "react";
-import { useTransactions } from "@/lib/hooks/use-transactions";
+import { useTransition } from "react";
 import { bpsToPercent, calcFeeAmount, getFeeBps } from "@/lib/utils/fee-utils";
 import type { TransactionResponse, Transaction } from "@/lib/types/transaction";
 
@@ -20,34 +19,12 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
 
-  // Current filters from URL
-  const currentFilters = {
-    currency: searchParams.get("currency") as Currency,
-    paymentType: searchParams.get("paymentType") as PaymentType,
-  };
+  // Current filters from URL - these are our source of truth
+  const currentCurrency = searchParams.get("currency") as Currency;
+  const currentPaymentType = searchParams.get("paymentType") as PaymentType;
 
-  // Optimistic UI state
-  const [optimisticFilters, setOptimisticFilters] = useOptimistic(
-    currentFilters,
-    (
-      state,
-      newFilters: { currency?: Currency; paymentType?: PaymentType }
-    ) => ({
-      ...state,
-      ...newFilters,
-    })
-  );
-
-  // Fetch data with custom hook
-  const { data: transactionData, isLoading } = useTransactions(
-    {
-      currency: currentFilters.currency,
-      paymentType: currentFilters.paymentType,
-      cursor: searchParams.get("cursor") || undefined,
-      limit: 5,
-    },
-    initialData
-  );
+  // Use initialData directly
+  const transactionData = initialData;
 
   const formatAmount = (amount: number): string => {
     const majorUnits = amount / 100;
@@ -79,11 +56,6 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
   }) => {
     const params = new URLSearchParams(searchParams.toString());
 
-    // Update optimistic state immediately
-    startTransition(() => {
-      setOptimisticFilters(updates);
-    });
-
     // Update URL params
     if (updates.currency) {
       params.set("currency", updates.currency);
@@ -100,8 +72,9 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
     // Reset cursor when filters change
     params.delete("cursor");
 
+    // Use startTransition for the navigation
     startTransition(() => {
-      router.push(`${pathname}?${params.toString()}`);
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
     });
   };
 
@@ -112,7 +85,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
     params.set("cursor", transactionData.pagination.nextCursor);
 
     startTransition(() => {
-      router.push(`${pathname}?${params.toString()}`);
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
     });
   };
 
@@ -121,7 +94,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
     params.delete("cursor");
 
     startTransition(() => {
-      router.push(`${pathname}?${params.toString()}`);
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
     });
   };
 
@@ -177,7 +150,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
             <p className="text-lg">
               <span className="font-semibold">What you need to do:</span> Move
               to server-side rendering with cursor pagination, URL-driven
-              filters, caching strategy, and optimistic UI.
+              filters, caching strategy, and smooth transitions.
             </p>
 
             <div className="space-y-2">
@@ -186,9 +159,8 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                 <li>Server-side data fetching with Next.js App Router</li>
                 <li>URL as single source of truth (shareable links)</li>
                 <li>Cursor-based pagination</li>
-                <li>Stale-while-revalidate caching strategy</li>
-                <li>Optimistic UI with useOptimistic</li>
-                <li>Client-side caching with TanStack Query</li>
+                <li>Server-side rendering with no client fetching</li>
+                <li>Smooth transitions with useTransition</li>
                 <li>Input validation with Zod</li>
               </ul>
             </div>
@@ -213,15 +185,15 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                   onClick={() =>
                     updateFilters({
                       currency: currency === "All" ? undefined : currency,
-                      paymentType: optimisticFilters.paymentType,
+                      paymentType: currentPaymentType,
                     })
                   }
                   disabled={isPending}
                   className={`px-3 md:px-4 py-2 rounded-lg font-medium text-sm transition-all ${
                     (
                       currency === "All"
-                        ? !optimisticFilters.currency
-                        : optimisticFilters.currency === currency
+                        ? !currentCurrency
+                        : currentCurrency === currency
                     )
                       ? "bg-indigo-600 dark:bg-indigo-500 text-white shadow-md hover:bg-indigo-700 dark:hover:bg-indigo-600"
                       : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -244,7 +216,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                   key={paymentType}
                   onClick={() =>
                     updateFilters({
-                      currency: optimisticFilters.currency,
+                      currency: currentCurrency,
                       paymentType:
                         paymentType === "All" ? undefined : paymentType,
                     })
@@ -253,8 +225,8 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                   className={`px-3 md:px-4 py-2 rounded-lg font-medium text-sm transition-all capitalize ${
                     (
                       paymentType === "All"
-                        ? !optimisticFilters.paymentType
-                        : optimisticFilters.paymentType === paymentType
+                        ? !currentPaymentType
+                        : currentPaymentType === paymentType
                     )
                       ? "bg-emerald-600 dark:bg-emerald-500 text-white shadow-md hover:bg-emerald-700 dark:hover:bg-emerald-600"
                       : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -270,15 +242,15 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
           <div className="mb-4 text-sm font-medium text-gray-600 dark:text-gray-400">
             Showing {transactionData?.data.length || 0} of{" "}
             {transactionData?.pagination.total || 0} transactions
+            {isPending && (
+              <span className="ml-2 text-indigo-600 dark:text-indigo-400 animate-pulse">
+                (updating...)
+              </span>
+            )}
           </div>
 
           {/* Table */}
-          {isLoading && !transactionData ? (
-            <div className="py-20 text-center text-gray-700 dark:text-gray-300">
-              <div className="animate-spin text-4xl mb-4">⏳</div>
-              <p>Loading transactions...</p>
-            </div>
-          ) : transactionData?.data.length === 0 ? (
+          {transactionData?.data.length === 0 ? (
             <div className="py-20 text-center text-gray-500 dark:text-gray-400">
               <svg
                 className="mx-auto h-16 w-16 mb-4 opacity-40"
@@ -299,7 +271,13 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
               </p>
             </div>
           ) : (
-            <>
+            <div
+              className={
+                isPending
+                  ? "opacity-60 transition-opacity"
+                  : "transition-opacity"
+              }
+            >
               {/* Desktop Table View */}
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full border-collapse">
@@ -441,7 +419,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                   );
                 })}
               </div>
-            </>
+            </div>
           )}
         </div>
 
@@ -503,7 +481,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
               <p>
                 All filter and pagination state lives in the URL. This makes
                 links shareable, enables browser back/forward, and provides
-                clear state management.
+                clear state management. No client-side fetching is needed.
               </p>
             </div>
 
@@ -518,21 +496,21 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
 
             <div>
               <h4 className="font-semibold mb-2">
-                4. Stale-While-Revalidate Caching
+                4. Server-Side Rendering Benefits
               </h4>
               <p>
-                The API route sets Cache-Control headers (s-maxage=60,
-                stale-while-revalidate=300). CDN serves cached data for 60s,
-                then serves stale data while revalidating.
+                Data is fetched on the server and passed as initialData. Filter
+                changes trigger server re-renders through URL updates, ensuring
+                fresh data without client-side API calls.
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">5. Optimistic UI Updates</h4>
+              <h4 className="font-semibold mb-2">5. Smooth Transitions</h4>
               <p>
-                Uses useOptimistic hook to immediately update the UI when
-                filters change, before the server responds. Combined with
-                useTransition for smooth UX.
+                Uses useTransition hook to provide non-blocking updates when
+                filters change. The UI remains interactive while the server
+                fetches new data, with visual feedback through opacity changes.
               </p>
             </div>
 
@@ -548,12 +526,12 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
 
             <div>
               <h4 className="font-semibold mb-2">
-                7. Multi-Layer Caching Strategy
+                7. No Over-Fetching Pattern
               </h4>
               <p>
-                Three layers: (1) HTTP cache at CDN/edge, (2) Next.js fetch
-                cache with revalidate, (3) TanStack Query client cache with
-                staleTime.
+                By using server components and URL state, we eliminate
+                unnecessary client-side fetching. Data is only fetched once per
+                page load on the server.
               </p>
             </div>
           </div>
