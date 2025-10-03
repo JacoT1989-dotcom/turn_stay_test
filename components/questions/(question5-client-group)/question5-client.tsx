@@ -1,121 +1,39 @@
-"use client";
+// components/questions/(question5-client-group)/question5-client.tsx
 
+"use client";
 import Link from "next/link";
 import { useState, useMemo } from "react";
+import { Country, PaymentType } from "../shared-types";
+import { transactions } from "./transactions-data";
+import {
+  formatAmount,
+  formatDate,
+  getCurrencyFromCountry,
+} from "../formatters";
+import CurrencyFilter from "../CurrencyFilter";
+import PaymentTypeFilter from "../PaymentTypeFilter";
+import { filterTransactions } from "../filterUtils";
+import {
+  bpsToPercent,
+  calcFeeAmount,
+  getFeeBps,
+  hasOverride,
+} from "../feeUtils";
 
-type Tx = {
-  id: string;
-  amount: number;
-  currency: "ZAR" | "USD" | "EUR";
-  paymentType: "card" | "bank" | "wallet";
-  scheme?: "visa" | "mastercard" | "amex";
-  createdAt: string;
-  fee?: number;
-};
-
-const transactions: Tx[] = [
-  {
-    id: "t_1",
-    amount: 125000,
-    currency: "ZAR",
-    paymentType: "card",
-    scheme: "visa",
-    createdAt: "2025-09-10T10:00:00Z",
-  },
-  {
-    id: "t_2",
-    amount: 56000,
-    currency: "USD",
-    paymentType: "card",
-    scheme: "mastercard",
-    createdAt: "2025-09-11T12:15:00Z",
-    fee: 290,
-  },
-  {
-    id: "t_3",
-    amount: 99000,
-    currency: "ZAR",
-    paymentType: "bank",
-    createdAt: "2025-09-12T09:30:00Z",
-  },
-  {
-    id: "t_4",
-    amount: 45000,
-    currency: "EUR",
-    paymentType: "wallet",
-    createdAt: "2025-09-12T10:05:00Z",
-  },
-  {
-    id: "t_5",
-    amount: 200000,
-    currency: "ZAR",
-    paymentType: "card",
-    scheme: "amex",
-    createdAt: "2025-09-12T12:00:00Z",
-  },
-];
-
-type Currency = "All" | "ZAR" | "USD" | "EUR";
-type PaymentType = "All" | "card" | "bank" | "wallet";
-
-// Fee utility functions
-const getFeeBps = (tx: Tx): number => {
-  if (tx.fee !== undefined) return tx.fee;
-  if (tx.paymentType === "card") return 260;
-  if (tx.paymentType === "bank") return 90;
-  if (tx.paymentType === "wallet") return 150;
-  return 0;
-};
-
-const bpsToPercent = (bps: number): string => {
-  return `${(bps / 100).toFixed(2)}%`;
-};
-
-const calcFeeAmount = (amount: number, bps: number): number => {
-  return Math.round((amount * bps) / 10000);
-};
+const countries: Country[] = ["All", "ZA", "US", "EUR"];
+const paymentTypes: PaymentType[] = ["All", "card", "bank", "wallet"];
 
 export default function Question5Client() {
-  const [selectedCurrency, setSelectedCurrency] = useState<Currency>("All");
+  const [selectedCountry, setSelectedCountry] = useState<Country>("All");
   const [selectedPaymentType, setSelectedPaymentType] =
     useState<PaymentType>("All");
 
-  const formatAmount = (amount: number): string => {
-    const majorUnits = amount / 100;
-    return majorUnits.toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-  };
-
-  const formatDate = (isoDate: string): string => {
-    const date = new Date(isoDate);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  // Check if transaction has override fee
-  const hasOverride = (tx: Tx): boolean => {
-    return tx.fee !== undefined;
-  };
-
   const filteredTransactions = useMemo(() => {
-    return transactions.filter((tx) => {
-      const matchesCurrency =
-        selectedCurrency === "All" || tx.currency === selectedCurrency;
-      const matchesPaymentType =
-        selectedPaymentType === "All" || tx.paymentType === selectedPaymentType;
-      return matchesCurrency && matchesPaymentType;
+    return filterTransactions(transactions, {
+      country: selectedCountry,
+      paymentType: selectedPaymentType,
     });
-  }, [selectedCurrency, selectedPaymentType]);
-
-  const currencies: Currency[] = ["All", "ZAR", "USD", "EUR"];
-  const paymentTypes: PaymentType[] = ["All", "card", "bank", "wallet"];
+  }, [selectedCountry, selectedPaymentType]);
 
   return (
     <div className="min-h-screen py-12 px-4 bg-gray-50 dark:bg-gray-900">
@@ -192,45 +110,22 @@ export default function Question5Client() {
           </h3>
 
           <div className="mb-4">
-            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
-              Filter by Currency
-            </label>
-            <div className="flex gap-2 flex-wrap">
-              {currencies.map((currency) => (
-                <button
-                  key={currency}
-                  onClick={() => setSelectedCurrency(currency)}
-                  className={`px-3 md:px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-                    selectedCurrency === currency
-                      ? "bg-indigo-600 dark:bg-indigo-500 text-white shadow-md hover:bg-indigo-700 dark:hover:bg-indigo-600"
-                      : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  }`}
-                >
-                  {currency}
-                </button>
-              ))}
-            </div>
+            <CurrencyFilter
+              selectedCountry={selectedCountry}
+              onCountryChange={setSelectedCountry}
+              countries={countries}
+              variant="buttons"
+              showLabel={true}
+            />
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
-              Filter by Payment Type
-            </label>
-            <div className="flex gap-2 flex-wrap">
-              {paymentTypes.map((paymentType) => (
-                <button
-                  key={paymentType}
-                  onClick={() => setSelectedPaymentType(paymentType)}
-                  className={`px-3 md:px-4 py-2 rounded-lg font-medium text-sm transition-all capitalize ${
-                    selectedPaymentType === paymentType
-                      ? "bg-emerald-600 dark:bg-emerald-500 text-white shadow-md hover:bg-emerald-700 dark:hover:bg-emerald-600"
-                      : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  }`}
-                >
-                  {paymentType}
-                </button>
-              ))}
-            </div>
+            <PaymentTypeFilter
+              selectedPaymentType={selectedPaymentType}
+              onPaymentTypeChange={setSelectedPaymentType}
+              paymentTypes={paymentTypes}
+              showLabel={true}
+            />
           </div>
 
           <div className="mb-4 text-sm font-medium text-gray-600 dark:text-gray-400">
@@ -303,10 +198,10 @@ export default function Question5Client() {
                             {formatDate(tx.createdAt)}
                           </td>
                           <td className="py-3 px-4 text-right font-semibold text-gray-800 dark:text-gray-200">
-                            {formatAmount(tx.amount)}
+                            {formatAmount(tx.amount, tx.country)}
                           </td>
                           <td className="py-3 px-4 text-gray-700 dark:text-gray-300">
-                            {tx.currency}
+                            {getCurrencyFromCountry(tx.country)}
                           </td>
                           <td className="py-3 px-4">
                             <span
@@ -334,7 +229,7 @@ export default function Question5Client() {
                                 )}
                               </div>
                               <span className="font-semibold text-gray-800 dark:text-gray-200">
-                                {formatAmount(feeAmount)}
+                                {formatAmount(feeAmount, tx.country)}
                               </span>
                             </div>
                           </td>
@@ -382,7 +277,7 @@ export default function Question5Client() {
                       </div>
 
                       <div className="text-2xl font-bold mb-2 text-gray-800 dark:text-gray-200">
-                        {tx.currency} {formatAmount(tx.amount)}
+                        {formatAmount(tx.amount, tx.country)}
                       </div>
 
                       <div className="flex justify-between items-center mb-2">
@@ -390,7 +285,7 @@ export default function Question5Client() {
                           Fee ({bpsToPercent(feeBps)})
                         </span>
                         <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                          {formatAmount(feeAmount)}
+                          {formatAmount(feeAmount, tx.country)}
                         </span>
                       </div>
 
@@ -412,24 +307,48 @@ export default function Question5Client() {
 
           <div className="space-y-4 text-gray-700 dark:text-gray-300">
             <div>
-              <h4 className="font-semibold mb-2">1. Override Precedence</h4>
+              <h4 className="font-semibold mb-2">
+                1. Shared Components & Utilities
+              </h4>
+              <p>
+                Reuses{" "}
+                <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                  CurrencyFilter
+                </code>
+                ,{" "}
+                <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                  PaymentTypeFilter
+                </code>
+                ,{" "}
+                <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                  filterTransactions
+                </code>
+                , and fee utilities from shared modules.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-2">2. Override Precedence</h4>
               <p>
                 The{" "}
                 <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
                   getFeeBps
                 </code>{" "}
                 function checks for override fee first before falling back to
-                generic fee. This implements correct precedence in a single
-                place.
+                default fee by payment type. This implements correct precedence
+                in a single place.
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">2. Single Source of Truth</h4>
+              <h4 className="font-semibold mb-2">3. Single Source of Truth</h4>
               <p>
-                All fee logic is centralized in the utility function. The
-                component doesn&apos;t need to know about override logic - it
-                just calls{" "}
+                All fee logic is centralized in{" "}
+                <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                  feeUtils.ts
+                </code>
+                . The component doesn&apos;t need to know about override logic -
+                it just calls{" "}
                 <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
                   getFeeBps(tx)
                 </code>{" "}
@@ -438,7 +357,7 @@ export default function Question5Client() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">3. Visual Indicator</h4>
+              <h4 className="font-semibold mb-2">4. Visual Indicator</h4>
               <p>
                 Transactions with custom fees show an amber &quot;override&quot;
                 badge, making it immediately clear which transactions have
@@ -449,7 +368,7 @@ export default function Question5Client() {
 
             <div>
               <h4 className="font-semibold mb-2">
-                4. Responsive Badge Placement
+                5. Responsive Badge Placement
               </h4>
               <p>
                 On desktop, the override badge appears next to the fee
@@ -460,7 +379,7 @@ export default function Question5Client() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">5. Minimal Duplication</h4>
+              <h4 className="font-semibold mb-2">6. Minimal Duplication</h4>
               <p>
                 The{" "}
                 <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
@@ -490,7 +409,7 @@ export default function Question5Client() {
               <ul className="list-disc ml-6 space-y-1">
                 <li>
                   Test with transaction that has no override - should use
-                  generic fee
+                  default fee for payment type
                 </li>
                 <li>
                   Test with transaction that has override - should use override
@@ -508,6 +427,26 @@ export default function Question5Client() {
                 Since the logic is in a separate file with no dependencies, it
                 can be unit tested in isolation without needing to mount React
                 components.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-2">
+                Complete Reusability Achieved
+              </h4>
+              <p className="mb-2">Questions 2-5 now share:</p>
+              <ul className="list-disc ml-6 space-y-1">
+                <li>Type definitions (shared-types.ts)</li>
+                <li>Filter components (CurrencyFilter, PaymentTypeFilter)</li>
+                <li>Filter logic (filterUtils.ts)</li>
+                <li>Fee calculations (feeUtils.ts)</li>
+                <li>
+                  Formatters (formatAmount, formatDate, getCurrencyFromCountry)
+                </li>
+              </ul>
+              <p className="mt-2">
+                This demonstrates production-ready architecture with maximum
+                code reuse, single source of truth, and easy maintainability.
               </p>
             </div>
           </div>

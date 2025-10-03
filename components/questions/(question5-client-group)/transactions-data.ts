@@ -1,4 +1,4 @@
-// components/questions/(question3-client-group)/transactions-data.ts
+// components/questions/(question5-client-group)/transactions-data.ts
 
 import { Tx } from "../shared-types";
 
@@ -18,7 +18,7 @@ export const transactions: Tx[] = [
     paymentType: "card",
     scheme: "mastercard",
     createdAt: "2025-09-11T12:15:00Z",
-    hasCustomFee: true,
+    hasCustomFee: true, // This transaction has a custom fee override
   },
   {
     id: "t_3",

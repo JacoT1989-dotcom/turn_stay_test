@@ -1,4 +1,4 @@
-// components/questions/shared/types.ts
+// components/questions/shared-types.ts
 
 export type Country = "All" | "ZA" | "US" | "EUR";
 export type PaymentType = "All" | "card" | "bank" | "wallet";
@@ -10,7 +10,7 @@ export type Tx = {
   paymentType: "card" | "bank" | "wallet";
   scheme?: "visa" | "mastercard" | "amex";
   createdAt: string;
-  fee?: number;
+  hasCustomFee?: boolean; // Boolean flag to indicate custom fee override
 };
 
 export const countryCurrencyMap: Record<

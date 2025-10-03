@@ -1,4 +1,4 @@
-// components\questions\(question2-client-group)\transactions-data.ts
+// components/questions/(question2-client-group)/transactions-data.ts
 
 import { Tx } from "../shared-types";
 
@@ -18,7 +18,7 @@ export const transactions: Tx[] = [
     paymentType: "card",
     scheme: "mastercard",
     createdAt: "2025-09-11T12:15:00Z",
-    fee: 290,
+    hasCustomFee: true,
   },
   {
     id: "t_3",
