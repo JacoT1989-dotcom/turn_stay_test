@@ -224,7 +224,7 @@ export default function Question1Client() {
 
         {/* Solution */}
         <div
-          className={`rounded-xl shadow-2xl p-8 transition-colors ${
+          className={`rounded-xl shadow-2xl p-4 md:p-8 transition-colors ${
             isDark ? "bg-gray-800" : "bg-white"
           }`}
         >
@@ -236,7 +236,8 @@ export default function Question1Client() {
             Solution
           </h3>
 
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
                 <tr
@@ -337,6 +338,57 @@ export default function Question1Client() {
               </tbody>
             </table>
           </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-4">
+            {transactions.map((tx) => (
+              <div
+                key={tx.id}
+                className={`rounded-lg p-4 border transition-colors ${
+                  isDark
+                    ? "bg-gray-750 border-gray-700"
+                    : "bg-gray-50 border-gray-200"
+                }`}
+              >
+                <div className="flex justify-between items-start mb-3">
+                  <span
+                    className={`font-mono text-sm font-semibold ${
+                      isDark ? "text-indigo-400" : "text-indigo-600"
+                    }`}
+                  >
+                    {tx.id}
+                  </span>
+                  <span
+                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      tx.paymentType === "card"
+                        ? "bg-blue-100 text-blue-800"
+                        : tx.paymentType === "bank"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-purple-100 text-purple-800"
+                    }`}
+                  >
+                    {tx.paymentType}
+                  </span>
+                </div>
+
+                <div
+                  className={`text-2xl font-bold mb-2 ${
+                    isDark ? "text-gray-200" : "text-gray-800"
+                  }`}
+                >
+                  {tx.currency} {formatAmount(tx.amount)}
+                </div>
+
+                <div
+                  className={`text-sm ${
+                    isDark ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  {formatDate(tx.createdAt)}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Code Explanation */}
@@ -399,7 +451,39 @@ export default function Question1Client() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">3. Stable Keys</h4>
+              <h4 className="font-semibold mb-2">3. Responsive Design</h4>
+              <p>
+                Uses Tailwind&apos;s{" "}
+                <code
+                  className={`px-2 py-1 rounded text-sm ${
+                    isDark ? "bg-gray-700" : "bg-gray-100"
+                  }`}
+                >
+                  md:
+                </code>{" "}
+                breakpoint to show a table on desktop and card layout on mobile.
+                The{" "}
+                <code
+                  className={`px-2 py-1 rounded text-sm ${
+                    isDark ? "bg-gray-700" : "bg-gray-100"
+                  }`}
+                >
+                  hidden md:block
+                </code>{" "}
+                and{" "}
+                <code
+                  className={`px-2 py-1 rounded text-sm ${
+                    isDark ? "bg-gray-700" : "bg-gray-100"
+                  }`}
+                >
+                  md:hidden
+                </code>{" "}
+                classes control visibility based on screen size.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-2">4. Stable Keys</h4>
               <p>
                 Uses{" "}
                 <code
@@ -415,7 +499,7 @@ export default function Question1Client() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">4. Semantic HTML</h4>
+              <h4 className="font-semibold mb-2">5. Semantic HTML</h4>
               <p>
                 Uses proper table structure with{" "}
                 <code
