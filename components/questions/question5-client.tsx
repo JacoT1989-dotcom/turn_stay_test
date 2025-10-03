@@ -3,7 +3,6 @@
 
 import Link from "next/link";
 import { useState, useMemo } from "react";
-import { bpsToPercent, calcFeeAmount, getFeeBps } from "@/lib/utils/fee-utils";
 
 type Tx = {
   id: string;
@@ -59,6 +58,23 @@ const transactions: Tx[] = [
 
 type Currency = "All" | "ZAR" | "USD" | "EUR";
 type PaymentType = "All" | "card" | "bank" | "wallet";
+
+// Fee utility functions
+const getFeeBps = (tx: Tx): number => {
+  if (tx.fee !== undefined) return tx.fee;
+  if (tx.paymentType === "card") return 260;
+  if (tx.paymentType === "bank") return 90;
+  if (tx.paymentType === "wallet") return 150;
+  return 0;
+};
+
+const bpsToPercent = (bps: number): string => {
+  return `${(bps / 100).toFixed(2)}%`;
+};
+
+const calcFeeAmount = (amount: number, bps: number): number => {
+  return Math.round((amount * bps) / 10000);
+};
 
 export default function Question5Client() {
   const [isDark, setIsDark] = useState(false);
@@ -235,7 +251,7 @@ export default function Question5Client() {
         </div>
 
         <div
-          className={`rounded-xl shadow-2xl p-8 transition-colors ${
+          className={`rounded-xl shadow-2xl p-4 md:p-8 transition-colors ${
             isDark ? "bg-gray-800" : "bg-white"
           }`}
         >
@@ -260,7 +276,7 @@ export default function Question5Client() {
                 <button
                   key={currency}
                   onClick={() => setSelectedCurrency(currency)}
-                  className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+                  className={`px-3 md:px-4 py-2 rounded-lg font-medium text-sm transition-all ${
                     selectedCurrency === currency
                       ? "bg-indigo-600 text-white shadow-md hover:bg-indigo-700"
                       : isDark
@@ -287,7 +303,7 @@ export default function Question5Client() {
                 <button
                   key={paymentType}
                   onClick={() => setSelectedPaymentType(paymentType)}
-                  className={`px-4 py-2 rounded-lg font-medium text-sm transition-all capitalize ${
+                  className={`px-3 md:px-4 py-2 rounded-lg font-medium text-sm transition-all capitalize ${
                     selectedPaymentType === paymentType
                       ? "bg-emerald-600 text-white shadow-md hover:bg-emerald-700"
                       : isDark
@@ -335,102 +351,174 @@ export default function Question5Client() {
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr
-                    className={`border-b-2 ${
-                      isDark ? "border-gray-700" : "border-gray-200"
-                    }`}
-                  >
-                    <th
-                      className={`text-left py-3 px-4 font-semibold ${
-                        isDark ? "text-gray-200" : "text-gray-700"
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr
+                      className={`border-b-2 ${
+                        isDark ? "border-gray-700" : "border-gray-200"
                       }`}
                     >
-                      ID
-                    </th>
-                    <th
-                      className={`text-left py-3 px-4 font-semibold ${
-                        isDark ? "text-gray-200" : "text-gray-700"
-                      }`}
-                    >
-                      Date
-                    </th>
-                    <th
-                      className={`text-right py-3 px-4 font-semibold ${
-                        isDark ? "text-gray-200" : "text-gray-700"
-                      }`}
-                    >
-                      Amount
-                    </th>
-                    <th
-                      className={`text-left py-3 px-4 font-semibold ${
-                        isDark ? "text-gray-200" : "text-gray-700"
-                      }`}
-                    >
-                      Currency
-                    </th>
-                    <th
-                      className={`text-left py-3 px-4 font-semibold ${
-                        isDark ? "text-gray-200" : "text-gray-700"
-                      }`}
-                    >
-                      Payment Type
-                    </th>
-                    <th
-                      className={`text-right py-3 px-4 font-semibold ${
-                        isDark ? "text-gray-200" : "text-gray-700"
-                      }`}
-                    >
-                      Fee
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredTransactions.map((tx) => {
-                    const feeBps = getFeeBps(tx);
-                    const feeAmount = calcFeeAmount(tx.amount, feeBps);
-                    const isOverride = hasOverride(tx);
-
-                    return (
-                      <tr
-                        key={tx.id}
-                        className={`border-b transition-colors ${
-                          isDark
-                            ? "border-gray-700 hover:bg-gray-750"
-                            : "border-gray-100 hover:bg-gray-50"
+                      <th
+                        className={`text-left py-3 px-4 font-semibold ${
+                          isDark ? "text-gray-200" : "text-gray-700"
                         }`}
                       >
-                        <td
-                          className={`py-3 px-4 font-mono text-sm ${
-                            isDark ? "text-gray-300" : "text-gray-600"
+                        ID
+                      </th>
+                      <th
+                        className={`text-left py-3 px-4 font-semibold ${
+                          isDark ? "text-gray-200" : "text-gray-700"
+                        }`}
+                      >
+                        Date
+                      </th>
+                      <th
+                        className={`text-right py-3 px-4 font-semibold ${
+                          isDark ? "text-gray-200" : "text-gray-700"
+                        }`}
+                      >
+                        Amount
+                      </th>
+                      <th
+                        className={`text-left py-3 px-4 font-semibold ${
+                          isDark ? "text-gray-200" : "text-gray-700"
+                        }`}
+                      >
+                        Currency
+                      </th>
+                      <th
+                        className={`text-left py-3 px-4 font-semibold ${
+                          isDark ? "text-gray-200" : "text-gray-700"
+                        }`}
+                      >
+                        Payment Type
+                      </th>
+                      <th
+                        className={`text-right py-3 px-4 font-semibold ${
+                          isDark ? "text-gray-200" : "text-gray-700"
+                        }`}
+                      >
+                        Fee
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredTransactions.map((tx) => {
+                      const feeBps = getFeeBps(tx);
+                      const feeAmount = calcFeeAmount(tx.amount, feeBps);
+                      const isOverride = hasOverride(tx);
+
+                      return (
+                        <tr
+                          key={tx.id}
+                          className={`border-b transition-colors ${
+                            isDark
+                              ? "border-gray-700 hover:bg-gray-750"
+                              : "border-gray-100 hover:bg-gray-50"
+                          }`}
+                        >
+                          <td
+                            className={`py-3 px-4 font-mono text-sm ${
+                              isDark ? "text-gray-300" : "text-gray-600"
+                            }`}
+                          >
+                            {tx.id}
+                          </td>
+                          <td
+                            className={`py-3 px-4 ${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            }`}
+                          >
+                            {formatDate(tx.createdAt)}
+                          </td>
+                          <td
+                            className={`py-3 px-4 text-right font-semibold ${
+                              isDark ? "text-gray-200" : "text-gray-800"
+                            }`}
+                          >
+                            {formatAmount(tx.amount)}
+                          </td>
+                          <td
+                            className={`py-3 px-4 ${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            }`}
+                          >
+                            {tx.currency}
+                          </td>
+                          <td className="py-3 px-4">
+                            <span
+                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                tx.paymentType === "card"
+                                  ? "bg-blue-100 text-blue-800"
+                                  : tx.paymentType === "bank"
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-purple-100 text-purple-800"
+                              }`}
+                            >
+                              {tx.paymentType}
+                            </span>
+                          </td>
+                          <td
+                            className={`py-3 px-4 text-right ${
+                              isDark ? "text-gray-300" : "text-gray-700"
+                            }`}
+                          >
+                            <div className="flex flex-col items-end gap-1">
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs text-gray-500">
+                                  {bpsToPercent(feeBps)}
+                                </span>
+                                {isOverride && (
+                                  <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800">
+                                    override
+                                  </span>
+                                )}
+                              </div>
+                              <span className="font-semibold">
+                                {formatAmount(feeAmount)}
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden space-y-4">
+                {filteredTransactions.map((tx) => {
+                  const feeBps = getFeeBps(tx);
+                  const feeAmount = calcFeeAmount(tx.amount, feeBps);
+                  const isOverride = hasOverride(tx);
+
+                  return (
+                    <div
+                      key={tx.id}
+                      className={`rounded-lg p-4 border transition-colors ${
+                        isDark
+                          ? "bg-gray-750 border-gray-700"
+                          : "bg-gray-50 border-gray-200"
+                      }`}
+                    >
+                      <div className="flex justify-between items-start mb-3">
+                        <span
+                          className={`font-mono text-sm font-semibold ${
+                            isDark ? "text-indigo-400" : "text-indigo-600"
                           }`}
                         >
                           {tx.id}
-                        </td>
-                        <td
-                          className={`py-3 px-4 ${
-                            isDark ? "text-gray-300" : "text-gray-700"
-                          }`}
-                        >
-                          {formatDate(tx.createdAt)}
-                        </td>
-                        <td
-                          className={`py-3 px-4 text-right font-semibold ${
-                            isDark ? "text-gray-200" : "text-gray-800"
-                          }`}
-                        >
-                          {formatAmount(tx.amount)}
-                        </td>
-                        <td
-                          className={`py-3 px-4 ${
-                            isDark ? "text-gray-300" : "text-gray-700"
-                          }`}
-                        >
-                          {tx.currency}
-                        </td>
-                        <td className="py-3 px-4">
+                        </span>
+                        <div className="flex items-center gap-2">
+                          {isOverride && (
+                            <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800">
+                              override
+                            </span>
+                          )}
                           <span
                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                               tx.paymentType === "card"
@@ -442,34 +530,46 @@ export default function Question5Client() {
                           >
                             {tx.paymentType}
                           </span>
-                        </td>
-                        <td
-                          className={`py-3 px-4 text-right ${
-                            isDark ? "text-gray-300" : "text-gray-700"
+                        </div>
+                      </div>
+
+                      <div
+                        className={`text-2xl font-bold mb-2 ${
+                          isDark ? "text-gray-200" : "text-gray-800"
+                        }`}
+                      >
+                        {tx.currency} {formatAmount(tx.amount)}
+                      </div>
+
+                      <div className="flex justify-between items-center mb-2">
+                        <span
+                          className={`text-sm ${
+                            isDark ? "text-gray-400" : "text-gray-600"
                           }`}
                         >
-                          <div className="flex flex-col items-end gap-1">
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs text-gray-500">
-                                {bpsToPercent(feeBps)}
-                              </span>
-                              {isOverride && (
-                                <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800">
-                                  override
-                                </span>
-                              )}
-                            </div>
-                            <span className="font-semibold">
-                              {formatAmount(feeAmount)}
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+                          Fee ({bpsToPercent(feeBps)})
+                        </span>
+                        <span
+                          className={`text-lg font-semibold ${
+                            isDark ? "text-gray-200" : "text-gray-800"
+                          }`}
+                        >
+                          {formatAmount(feeAmount)}
+                        </span>
+                      </div>
+
+                      <div
+                        className={`text-sm ${
+                          isDark ? "text-gray-400" : "text-gray-600"
+                        }`}
+                      >
+                        {formatDate(tx.createdAt)}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
           )}
         </div>
 
@@ -536,7 +636,19 @@ export default function Question5Client() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">4. Minimal Duplication</h4>
+              <h4 className="font-semibold mb-2">
+                4. Responsive Badge Placement
+              </h4>
+              <p>
+                On desktop, the override badge appears next to the fee
+                percentage. On mobile, it&apos;s positioned at the top right
+                with the payment type badge for better visibility and space
+                efficiency.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-2">5. Minimal Duplication</h4>
               <p>
                 The{" "}
                 <code
