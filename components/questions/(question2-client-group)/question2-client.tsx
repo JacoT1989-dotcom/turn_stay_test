@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Country } from "./question2-types";
 import { transactions } from "./question2-transactions";
 import {
@@ -8,6 +8,9 @@ import {
   formatDate,
   getCurrencyFromCountry,
 } from "../formatters";
+import CurrencyFilter from "./CurrencyFilter";
+
+const countries: Country[] = ["All", "ZA", "US", "EUR"];
 
 export default function Question2Client() {
   const [selectedCountry, setSelectedCountry] = useState<Country>("All");
@@ -17,12 +20,18 @@ export default function Question2Client() {
       ? transactions
       : transactions.filter((tx) => tx.country === selectedCountry);
 
-  const countries: Country[] = ["All", "ZA", "US", "EUR"];
-
-  const getCountryDisplay = (country: Country): string => {
-    if (country === "All") return "All";
-    return getCurrencyFromCountry(country as "ZA" | "US" | "EUR");
-  };
+  // Calculate transaction counts for each country
+  const transactionCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    countries.forEach((country) => {
+      if (country !== "All") {
+        counts[country] = transactions.filter(
+          (tx) => tx.country === country
+        ).length;
+      }
+    });
+    return counts;
+  }, []);
 
   return (
     <div className="min-h-screen py-12 px-4 bg-gray-50 dark:bg-gray-900">
@@ -106,37 +115,12 @@ export default function Question2Client() {
           </h3>
 
           <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="inline-flex rounded-xl p-1 w-full sm:w-auto overflow-x-auto bg-gray-100 dark:bg-gray-700">
-              {countries.map((country) => (
-                <button
-                  key={country}
-                  onClick={() => setSelectedCountry(country)}
-                  className={`relative px-4 sm:px-6 py-2.5 rounded-lg font-medium transition-all duration-200 whitespace-nowrap ${
-                    selectedCountry === country
-                      ? "bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 shadow-md"
-                      : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
-                  }`}
-                >
-                  <span className="flex items-center gap-2">
-                    {getCountryDisplay(country)}
-                    {country !== "All" && (
-                      <span
-                        className={`text-xs px-2 py-0.5 rounded-full ${
-                          selectedCountry === country
-                            ? "bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300"
-                            : "bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300"
-                        }`}
-                      >
-                        {
-                          transactions.filter((tx) => tx.country === country)
-                            .length
-                        }
-                      </span>
-                    )}
-                  </span>
-                </button>
-              ))}
-            </div>
+            <CurrencyFilter
+              selectedCountry={selectedCountry}
+              onCountryChange={setSelectedCountry}
+              countries={countries}
+              transactionCounts={transactionCounts}
+            />
 
             <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
               Showing {filteredTransactions.length} of {transactions.length}{" "}
@@ -270,8 +254,20 @@ export default function Question2Client() {
 
           <div className="space-y-4 text-gray-700 dark:text-gray-300">
             <div>
+              <h4 className="font-semibold mb-2">1. Component Composition</h4>
+              <p>
+                The filter UI is extracted into a separate{" "}
+                <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                  CurrencyFilter
+                </code>{" "}
+                component, demonstrating separation of concerns and reusability.
+                Props are passed down for state and callbacks.
+              </p>
+            </div>
+
+            <div>
               <h4 className="font-semibold mb-2">
-                1. Controlled Component State
+                2. Controlled Component State
               </h4>
               <p>
                 Uses{" "}
@@ -285,7 +281,7 @@ export default function Question2Client() {
 
             <div>
               <h4 className="font-semibold mb-2">
-                2. Derived State (Filtered List)
+                3. Derived State (Filtered List)
               </h4>
               <p>
                 Creates a filtered list using a simple ternary expression. This
@@ -295,22 +291,19 @@ export default function Question2Client() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">
-                3. No Unnecessary Re-renders
-              </h4>
+              <h4 className="font-semibold mb-2">4. Memoized Calculations</h4>
               <p>
-                Only the filter state changes on click. The filtering logic runs
-                on every render but this is fine for small datasets. For larger
-                datasets, you could use{" "}
+                Uses{" "}
                 <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
                   useMemo
-                </code>
-                .
+                </code>{" "}
+                to calculate transaction counts once and avoid recalculation on
+                every render.
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">4. Responsive Design</h4>
+              <h4 className="font-semibold mb-2">5. Responsive Design</h4>
               <p>
                 Uses separate layouts for mobile (cards) and desktop (table).
                 The filter buttons also adapt with{" "}
@@ -322,18 +315,10 @@ export default function Question2Client() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">5. Empty State Handling</h4>
+              <h4 className="font-semibold mb-2">6. Empty State Handling</h4>
               <p>
                 Displays a friendly message when no transactions match the
                 filter, improving user experience.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-2">6. Transaction Counts</h4>
-              <p>
-                Shows the count of transactions per currency in the filter
-                buttons, giving users context before filtering.
               </p>
             </div>
           </div>
