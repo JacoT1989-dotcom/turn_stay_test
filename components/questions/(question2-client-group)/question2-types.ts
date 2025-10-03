@@ -1,4 +1,4 @@
-// types/question2.ts
+// components\questions\(question2-client-group)\question2-types.ts
 
 export type Tx = {
   id: string;

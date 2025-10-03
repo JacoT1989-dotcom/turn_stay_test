@@ -1,6 +1,6 @@
-// components\questions\(question1-client-group)\transaction-data.ts
+// components\questions\(question2-client-group)\transactions-data.ts
 
-import { Tx } from "./question1-types";
+import { Tx } from "./question2-types";
 
 export const transactions: Tx[] = [
   {

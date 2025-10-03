@@ -1,4 +1,4 @@
-// components/questions/question1-client.tsx
+// components\questions\(question1-client-group)\question1-client.tsx
 "use client";
 
 import Link from "next/link";

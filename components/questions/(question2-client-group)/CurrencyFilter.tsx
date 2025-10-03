@@ -1,4 +1,4 @@
-// components/CurrencyFilter.tsx
+// components\questions\(question2-client-group)\CurrencyFilter.tsx
 
 import { Country } from "./question2-types";
 import { getCurrencyFromCountry } from "../formatters";

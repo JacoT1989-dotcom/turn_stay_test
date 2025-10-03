@@ -1,8 +1,10 @@
+// components\questions\(question2-client-group)\question2-client.tsx
+
 "use client";
 import Link from "next/link";
 import { useState, useMemo } from "react";
 import { Country } from "./question2-types";
-import { transactions } from "./question2-transactions";
+import { transactions } from "./transactions-data";
 import {
   formatAmount,
   formatDate,

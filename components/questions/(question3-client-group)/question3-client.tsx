@@ -1,99 +1,35 @@
+// components/question3-client.tsx
 "use client";
 
 import Link from "next/link";
 import { useState, useMemo } from "react";
+import { Country, PaymentType } from "./question3-types";
+import {
+  formatAmount,
+  formatDate,
+  getCurrencyFromCountry,
+} from "../formatters";
+import CurrencyFilter from "./CurrencyFilter";
+import PaymentTypeFilter from "./PaymentTypeFilter";
+import { transactions } from "./transactions-data";
 
-type Tx = {
-  id: string;
-  amount: number;
-  currency: "ZAR" | "USD" | "EUR";
-  paymentType: "card" | "bank" | "wallet";
-  scheme?: "visa" | "mastercard" | "amex";
-  createdAt: string;
-  fee?: number;
-};
-
-const transactions: Tx[] = [
-  {
-    id: "t_1",
-    amount: 125000,
-    currency: "ZAR",
-    paymentType: "card",
-    scheme: "visa",
-    createdAt: "2025-09-10T10:00:00Z",
-  },
-  {
-    id: "t_2",
-    amount: 56000,
-    currency: "USD",
-    paymentType: "card",
-    scheme: "mastercard",
-    createdAt: "2025-09-11T12:15:00Z",
-    fee: 290,
-  },
-  {
-    id: "t_3",
-    amount: 99000,
-    currency: "ZAR",
-    paymentType: "bank",
-    createdAt: "2025-09-12T09:30:00Z",
-  },
-  {
-    id: "t_4",
-    amount: 45000,
-    currency: "EUR",
-    paymentType: "wallet",
-    createdAt: "2025-09-12T10:05:00Z",
-  },
-  {
-    id: "t_5",
-    amount: 200000,
-    currency: "ZAR",
-    paymentType: "card",
-    scheme: "amex",
-    createdAt: "2025-09-12T12:00:00Z",
-  },
-];
-
-type Currency = "All" | "ZAR" | "USD" | "EUR";
-type PaymentType = "All" | "card" | "bank" | "wallet";
+const countries: Country[] = ["All", "ZA", "US", "EUR"];
+const paymentTypes: PaymentType[] = ["All", "card", "bank", "wallet"];
 
 export default function Question3Client() {
-  const [selectedCurrency, setSelectedCurrency] = useState<Currency>("All");
+  const [selectedCountry, setSelectedCountry] = useState<Country>("All");
   const [selectedPaymentType, setSelectedPaymentType] =
     useState<PaymentType>("All");
 
-  const formatAmount = (amount: number): string => {
-    const majorUnits = amount / 100;
-    return majorUnits.toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-  };
-
-  const formatDate = (isoDate: string): string => {
-    const date = new Date(isoDate);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
   const filteredTransactions = useMemo(() => {
     return transactions.filter((tx) => {
-      const matchesCurrency =
-        selectedCurrency === "All" || tx.currency === selectedCurrency;
+      const matchesCountry =
+        selectedCountry === "All" || tx.country === selectedCountry;
       const matchesPaymentType =
         selectedPaymentType === "All" || tx.paymentType === selectedPaymentType;
-      return matchesCurrency && matchesPaymentType;
+      return matchesCountry && matchesPaymentType;
     });
-  }, [selectedCurrency, selectedPaymentType]);
-
-  const currencies: Currency[] = ["All", "ZAR", "USD", "EUR"];
-  const paymentTypes: PaymentType[] = ["All", "card", "bank", "wallet"];
+  }, [selectedCountry, selectedPaymentType]);
 
   return (
     <div className="min-h-screen py-12 px-4 bg-gray-50 dark:bg-gray-900">
@@ -174,58 +110,32 @@ export default function Question3Client() {
           </h3>
 
           <div className="mb-4">
-            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
-              Filter by Currency
-            </label>
-            <div className="flex gap-2 flex-wrap">
-              {currencies.map((currency) => (
-                <button
-                  key={currency}
-                  onClick={() => setSelectedCurrency(currency)}
-                  className={`px-3 md:px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-                    selectedCurrency === currency
-                      ? "bg-indigo-600 dark:bg-indigo-500 text-white shadow-md hover:bg-indigo-700 dark:hover:bg-indigo-600"
-                      : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  }`}
-                >
-                  {currency}
-                </button>
-              ))}
-            </div>
+            <CurrencyFilter
+              selectedCountry={selectedCountry}
+              onCountryChange={setSelectedCountry}
+              countries={countries}
+            />
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
-              Filter by Payment Type
-            </label>
-            <div className="flex gap-2 flex-wrap">
-              {paymentTypes.map((paymentType) => (
-                <button
-                  key={paymentType}
-                  onClick={() => setSelectedPaymentType(paymentType)}
-                  className={`px-3 md:px-4 py-2 rounded-lg font-medium text-sm transition-all capitalize ${
-                    selectedPaymentType === paymentType
-                      ? "bg-emerald-600 dark:bg-emerald-500 text-white shadow-md hover:bg-emerald-700 dark:hover:bg-emerald-600"
-                      : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  }`}
-                >
-                  {paymentType}
-                </button>
-              ))}
-            </div>
+            <PaymentTypeFilter
+              selectedPaymentType={selectedPaymentType}
+              onPaymentTypeChange={setSelectedPaymentType}
+              paymentTypes={paymentTypes}
+            />
           </div>
 
           <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-gray-600 dark:text-gray-400">
             <div className="text-sm">
-              {selectedCurrency !== "All" || selectedPaymentType !== "All" ? (
+              {selectedCountry !== "All" || selectedPaymentType !== "All" ? (
                 <span>
                   Active filters:
-                  {selectedCurrency !== "All" && (
+                  {selectedCountry !== "All" && (
                     <span className="ml-1 font-semibold text-gray-800 dark:text-gray-200">
-                      {selectedCurrency}
+                      {selectedCountry}
                     </span>
                   )}
-                  {selectedCurrency !== "All" &&
+                  {selectedCountry !== "All" &&
                     selectedPaymentType !== "All" && <span> + </span>}
                   {selectedPaymentType !== "All" && (
                     <span className="font-semibold text-gray-800 dark:text-gray-200">
@@ -299,10 +209,10 @@ export default function Question3Client() {
                           {formatDate(tx.createdAt)}
                         </td>
                         <td className="py-3 px-4 text-right font-semibold text-gray-800 dark:text-gray-200">
-                          {formatAmount(tx.amount)}
+                          {formatAmount(tx.amount, tx.country)}
                         </td>
                         <td className="py-3 px-4 text-gray-700 dark:text-gray-300">
-                          {tx.currency}
+                          {getCurrencyFromCountry(tx.country)}
                         </td>
                         <td className="py-3 px-4">
                           <span
@@ -347,7 +257,7 @@ export default function Question3Client() {
                     </div>
 
                     <div className="text-2xl font-bold mb-2 text-gray-800 dark:text-gray-200">
-                      {tx.currency} {formatAmount(tx.amount)}
+                      {formatAmount(tx.amount, tx.country)}
                     </div>
 
                     <div className="text-sm text-gray-600 dark:text-gray-400">
@@ -387,7 +297,7 @@ export default function Question3Client() {
                   useMemo
                 </code>{" "}
                 to avoid recalculating the filtered list on every render. Only
-                recomputes when dependencies (selectedCurrency,
+                recomputes when dependencies (selectedCountry,
                 selectedPaymentType) change.
               </p>
             </div>
