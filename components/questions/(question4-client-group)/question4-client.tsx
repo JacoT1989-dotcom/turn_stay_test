@@ -1,108 +1,34 @@
-"use client";
+// components/questions/(question4-client-group)/question4-client.tsx
 
+"use client";
 import Link from "next/link";
 import { useState, useMemo } from "react";
+import { Country, PaymentType } from "../shared-types";
+import {
+  formatAmount,
+  formatDate,
+  getCurrencyFromCountry,
+} from "../formatters";
+import CurrencyFilter from "../CurrencyFilter";
+import PaymentTypeFilter from "../PaymentTypeFilter";
+import { filterTransactions } from "../filterUtils";
+import { bpsToPercent, calcFeeAmount, STANDARD_FEE_BPS } from "../feeUtils";
+import { transactions } from "./transactions-data";
 
-type Tx = {
-  id: string;
-  amount: number;
-  currency: "ZAR" | "USD" | "EUR";
-  paymentType: "card" | "bank" | "wallet";
-  scheme?: "visa" | "mastercard" | "amex";
-  createdAt: string;
-};
-
-const transactions: Tx[] = [
-  {
-    id: "t_1",
-    amount: 125000,
-    currency: "ZAR",
-    paymentType: "card",
-    scheme: "visa",
-    createdAt: "2025-09-10T10:00:00Z",
-  },
-  {
-    id: "t_2",
-    amount: 56000,
-    currency: "USD",
-    paymentType: "card",
-    scheme: "mastercard",
-    createdAt: "2025-09-11T12:15:00Z",
-  },
-  {
-    id: "t_3",
-    amount: 99000,
-    currency: "ZAR",
-    paymentType: "bank",
-    createdAt: "2025-09-12T09:30:00Z",
-  },
-  {
-    id: "t_4",
-    amount: 45000,
-    currency: "EUR",
-    paymentType: "wallet",
-    createdAt: "2025-09-12T10:05:00Z",
-  },
-  {
-    id: "t_5",
-    amount: 200000,
-    currency: "ZAR",
-    paymentType: "card",
-    scheme: "amex",
-    createdAt: "2025-09-12T12:00:00Z",
-  },
-];
-
-type Currency = "All" | "ZAR" | "USD" | "EUR";
-type PaymentType = "All" | "card" | "bank" | "wallet";
-
-// Fee utility functions - All transactions use 2.6% (260 bps)
-const FEE_BPS = 260;
-
-const bpsToPercent = (bps: number): string => {
-  return `${(bps / 100).toFixed(2)}%`;
-};
-
-const calcFeeAmount = (amount: number, bps: number): number => {
-  return Math.round((amount * bps) / 10000);
-};
+const countries: Country[] = ["All", "ZA", "US", "EUR"];
+const paymentTypes: PaymentType[] = ["All", "card", "bank", "wallet"];
 
 export default function Question4Client() {
-  const [selectedCurrency, setSelectedCurrency] = useState<Currency>("All");
+  const [selectedCountry, setSelectedCountry] = useState<Country>("All");
   const [selectedPaymentType, setSelectedPaymentType] =
     useState<PaymentType>("All");
 
-  const formatAmount = (amount: number): string => {
-    const majorUnits = amount / 100;
-    return majorUnits.toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-  };
-
-  const formatDate = (isoDate: string): string => {
-    const date = new Date(isoDate);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
   const filteredTransactions = useMemo(() => {
-    return transactions.filter((tx) => {
-      const matchesCurrency =
-        selectedCurrency === "All" || tx.currency === selectedCurrency;
-      const matchesPaymentType =
-        selectedPaymentType === "All" || tx.paymentType === selectedPaymentType;
-      return matchesCurrency && matchesPaymentType;
+    return filterTransactions(transactions, {
+      country: selectedCountry,
+      paymentType: selectedPaymentType,
     });
-  }, [selectedCurrency, selectedPaymentType]);
-
-  const currencies: Currency[] = ["All", "ZAR", "USD", "EUR"];
-  const paymentTypes: PaymentType[] = ["All", "card", "bank", "wallet"];
+  }, [selectedCountry, selectedPaymentType]);
 
   return (
     <div className="min-h-screen py-12 px-4 bg-gray-50 dark:bg-gray-900">
@@ -178,45 +104,21 @@ export default function Question4Client() {
           </h3>
 
           <div className="mb-4">
-            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
-              Filter by Currency
-            </label>
-            <div className="flex gap-2 flex-wrap">
-              {currencies.map((currency) => (
-                <button
-                  key={currency}
-                  onClick={() => setSelectedCurrency(currency)}
-                  className={`px-3 md:px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-                    selectedCurrency === currency
-                      ? "bg-indigo-600 dark:bg-indigo-500 text-white shadow-md hover:bg-indigo-700 dark:hover:bg-indigo-600"
-                      : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  }`}
-                >
-                  {currency}
-                </button>
-              ))}
-            </div>
+            <CurrencyFilter
+              selectedCountry={selectedCountry}
+              onCountryChange={setSelectedCountry}
+              countries={countries}
+              variant="buttons"
+              showLabel={true}
+            />
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
-              Filter by Payment Type
-            </label>
-            <div className="flex gap-2 flex-wrap">
-              {paymentTypes.map((paymentType) => (
-                <button
-                  key={paymentType}
-                  onClick={() => setSelectedPaymentType(paymentType)}
-                  className={`px-3 md:px-4 py-2 rounded-lg font-medium text-sm transition-all capitalize ${
-                    selectedPaymentType === paymentType
-                      ? "bg-emerald-600 dark:bg-emerald-500 text-white shadow-md hover:bg-emerald-700 dark:hover:bg-emerald-600"
-                      : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  }`}
-                >
-                  {paymentType}
-                </button>
-              ))}
-            </div>
+            <PaymentTypeFilter
+              selectedPaymentType={selectedPaymentType}
+              onPaymentTypeChange={setSelectedPaymentType}
+              paymentTypes={paymentTypes}
+            />
           </div>
 
           <div className="mb-4 text-sm font-medium text-gray-600 dark:text-gray-400">
@@ -273,7 +175,10 @@ export default function Question4Client() {
                   </thead>
                   <tbody>
                     {filteredTransactions.map((tx) => {
-                      const feeAmount = calcFeeAmount(tx.amount, FEE_BPS);
+                      const feeAmount = calcFeeAmount(
+                        tx.amount,
+                        STANDARD_FEE_BPS
+                      );
 
                       return (
                         <tr
@@ -287,10 +192,10 @@ export default function Question4Client() {
                             {formatDate(tx.createdAt)}
                           </td>
                           <td className="py-3 px-4 text-right font-semibold text-gray-800 dark:text-gray-200">
-                            {formatAmount(tx.amount)}
+                            {formatAmount(tx.amount, tx.country)}
                           </td>
                           <td className="py-3 px-4 text-gray-700 dark:text-gray-300">
-                            {tx.currency}
+                            {getCurrencyFromCountry(tx.country)}
                           </td>
                           <td className="py-3 px-4">
                             <span
@@ -308,10 +213,10 @@ export default function Question4Client() {
                           <td className="py-3 px-4 text-right text-gray-700 dark:text-gray-300">
                             <div className="flex flex-col items-end">
                               <span className="text-xs text-gray-500 dark:text-gray-400">
-                                {bpsToPercent(FEE_BPS)}
+                                {bpsToPercent(STANDARD_FEE_BPS)}
                               </span>
                               <span className="font-semibold text-gray-800 dark:text-gray-200">
-                                {formatAmount(feeAmount)}
+                                {formatAmount(feeAmount, tx.country)}
                               </span>
                             </div>
                           </td>
@@ -325,7 +230,7 @@ export default function Question4Client() {
               {/* Mobile Card View */}
               <div className="md:hidden space-y-4">
                 {filteredTransactions.map((tx) => {
-                  const feeAmount = calcFeeAmount(tx.amount, FEE_BPS);
+                  const feeAmount = calcFeeAmount(tx.amount, STANDARD_FEE_BPS);
 
                   return (
                     <div
@@ -350,15 +255,15 @@ export default function Question4Client() {
                       </div>
 
                       <div className="text-2xl font-bold mb-2 text-gray-800 dark:text-gray-200">
-                        {tx.currency} {formatAmount(tx.amount)}
+                        {formatAmount(tx.amount, tx.country)}
                       </div>
 
                       <div className="flex justify-between items-center mb-2">
                         <span className="text-sm text-gray-600 dark:text-gray-400">
-                          Fee ({bpsToPercent(FEE_BPS)})
+                          Fee ({bpsToPercent(STANDARD_FEE_BPS)})
                         </span>
                         <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                          {formatAmount(feeAmount)}
+                          {formatAmount(feeAmount, tx.country)}
                         </span>
                       </div>
 
@@ -381,7 +286,36 @@ export default function Question4Client() {
           <div className="space-y-4 text-gray-700 dark:text-gray-300">
             <div>
               <h4 className="font-semibold mb-2">
-                1. Basis Points to Percentage
+                1. Shared Filter Components
+              </h4>
+              <p>
+                Reuses{" "}
+                <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                  CurrencyFilter
+                </code>{" "}
+                and{" "}
+                <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                  PaymentTypeFilter
+                </code>{" "}
+                components from shared utilities, demonstrating component
+                reusability.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-2">2. Extracted Fee Utilities</h4>
+              <p>
+                Fee calculations are in{" "}
+                <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                  feeUtils.ts
+                </code>{" "}
+                - pure functions that are testable and maintainable.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-2">
+                3. Basis Points to Percentage
               </h4>
               <p>
                 Basis points (bps) are 1/100th of a percent. 260 bps = 2.60%.
@@ -390,37 +324,76 @@ export default function Question4Client() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">2. Fee Amount Calculation</h4>
+              <h4 className="font-semibold mb-2">4. Fee Amount Calculation</h4>
               <p>
                 Formula: (amount × bps) / 10,000. For t_1: (125000 × 260) /
-                10,000 = 3,250 cents = 32.50 dollars.
+                10,000 = 3,250 cents = R32.50.
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">3. Constant Fee Rate</h4>
+              <h4 className="font-semibold mb-2">5. Shared Filter Logic</h4>
               <p>
-                All transactions use the same flat fee rate of 2.60% (260 bps),
-                regardless of payment type, currency, or amount. This simplifies
-                the fee structure and makes calculations predictable.
+                Uses{" "}
+                <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                  filterTransactions
+                </code>{" "}
+                from{" "}
+                <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                  filterUtils.ts
+                </code>{" "}
+                - same filtering logic as Questions 2 and 3.
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">4. Utility Functions</h4>
-              <p>
-                All fee logic is in reusable utility functions - testable,
-                maintainable, single source of truth.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-2">5. Responsive Fee Display</h4>
+              <h4 className="font-semibold mb-2">6. Responsive Fee Display</h4>
               <p>
                 Desktop shows fee rate and amount in a stacked column. Mobile
                 displays fee information horizontally within each card for
                 better space utilization.
               </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-xl shadow-2xl p-8 mt-8 bg-white dark:bg-gray-800">
+          <h3 className="text-2xl font-bold mb-4 text-indigo-600 dark:text-indigo-400">
+            Architecture Benefits
+          </h3>
+
+          <div className="space-y-4 text-gray-700 dark:text-gray-300">
+            <div>
+              <h4 className="font-semibold mb-2">Complete Reusability</h4>
+              <ul className="list-disc ml-6 space-y-1">
+                <li>
+                  <span className="font-medium">Shared Types:</span> All
+                  questions use the same{" "}
+                  <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                    Tx
+                  </code>
+                  ,{" "}
+                  <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                    Country
+                  </code>
+                  , and{" "}
+                  <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                    PaymentType
+                  </code>
+                </li>
+                <li>
+                  <span className="font-medium">Shared Components:</span>{" "}
+                  CurrencyFilter and PaymentTypeFilter work across all questions
+                </li>
+                <li>
+                  <span className="font-medium">Shared Utilities:</span>{" "}
+                  filterUtils, feeUtils, and formatters are reused everywhere
+                </li>
+                <li>
+                  <span className="font-medium">Easy to Test:</span> Pure
+                  functions can be unit tested independently
+                </li>
+              </ul>
             </div>
           </div>
         </div>

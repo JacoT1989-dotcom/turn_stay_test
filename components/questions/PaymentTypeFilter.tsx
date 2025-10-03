@@ -1,23 +1,27 @@
-// components\questions\(question3-client-group)\PaymentTypeFilter.tsx
+// components/questions/PaymentTypeFilter.tsx
 
-import { PaymentType } from "../shared-types";
+import { PaymentType } from "./shared-types";
 
 interface PaymentTypeFilterProps {
   selectedPaymentType: PaymentType;
   onPaymentTypeChange: (paymentType: PaymentType) => void;
   paymentTypes: PaymentType[];
+  showLabel?: boolean;
 }
 
 export default function PaymentTypeFilter({
   selectedPaymentType,
   onPaymentTypeChange,
   paymentTypes,
+  showLabel = true,
 }: PaymentTypeFilterProps) {
   return (
     <div>
-      <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
-        Filter by Payment Type
-      </label>
+      {showLabel && (
+        <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
+          Filter by Payment Type
+        </label>
+      )}
       <div className="flex gap-2 flex-wrap">
         {paymentTypes.map((paymentType) => (
           <button

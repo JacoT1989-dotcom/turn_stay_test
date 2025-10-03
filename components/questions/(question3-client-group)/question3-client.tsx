@@ -8,7 +8,7 @@ import {
   formatDate,
   getCurrencyFromCountry,
 } from "../formatters";
-import PaymentTypeFilter from "./PaymentTypeFilter";
+import PaymentTypeFilter from "../PaymentTypeFilter";
 import { transactions } from "./transactions-data";
 import { Country, PaymentType } from "../shared-types";
 import CurrencyFilter from "../CurrencyFilter";
@@ -122,6 +122,7 @@ export default function Question3Client() {
               selectedPaymentType={selectedPaymentType}
               onPaymentTypeChange={setSelectedPaymentType}
               paymentTypes={paymentTypes}
+              showLabel={true}
             />
           </div>
 
@@ -277,9 +278,27 @@ export default function Question3Client() {
 
           <div className="space-y-4 text-gray-700 dark:text-gray-300">
             <div>
-              <h4 className="font-semibold mb-2">1. Extracted Filter Logic</h4>
+              <h4 className="font-semibold mb-2">
+                1. Shared Filter Components
+              </h4>
               <p>
-                The filtering logic is now extracted into{" "}
+                Both{" "}
+                <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                  CurrencyFilter
+                </code>{" "}
+                and{" "}
+                <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                  PaymentTypeFilter
+                </code>{" "}
+                are now imported from shared utilities, demonstrating component
+                reusability across Questions 3 and 4.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-2">2. Extracted Filter Logic</h4>
+              <p>
+                The filtering logic is extracted into{" "}
                 <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
                   filterUtils.ts
                 </code>
@@ -289,7 +308,7 @@ export default function Question3Client() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">2. Composable Filtering</h4>
+              <h4 className="font-semibold mb-2">3. Composable Filtering</h4>
               <p>
                 Uses a single{" "}
                 <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
@@ -302,7 +321,7 @@ export default function Question3Client() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">3. useMemo for Performance</h4>
+              <h4 className="font-semibold mb-2">4. useMemo for Performance</h4>
               <p>
                 Wraps the filtering logic in{" "}
                 <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
@@ -316,7 +335,7 @@ export default function Question3Client() {
 
             <div>
               <h4 className="font-semibold mb-2">
-                4. Independent Filter State
+                5. Independent Filter State
               </h4>
               <p>
                 Each filter has its own state variable. They work independently
@@ -326,7 +345,7 @@ export default function Question3Client() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">5. Responsive Design</h4>
+              <h4 className="font-semibold mb-2">6. Responsive Design</h4>
               <p>
                 Uses separate layouts for mobile (cards) and desktop (table).
                 Filter buttons adapt with responsive padding, and the active
@@ -335,7 +354,7 @@ export default function Question3Client() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">6. Separation of Concerns</h4>
+              <h4 className="font-semibold mb-2">7. Separation of Concerns</h4>
               <p>
                 Business logic (filtering) is separated from presentation logic
                 (React components), making the codebase more maintainable and
@@ -353,24 +372,24 @@ export default function Question3Client() {
           <div className="space-y-4 text-gray-700 dark:text-gray-300">
             <div>
               <h4 className="font-semibold mb-2">
-                Benefits of Extracted Filter Logic
+                Benefits of Shared Components
               </h4>
               <ul className="list-disc ml-6 space-y-1">
                 <li>
-                  <span className="font-medium">Reusability:</span> Can be used
-                  in multiple components without duplication
+                  <span className="font-medium">Reusability:</span> Both filters
+                  are used in Questions 3 and 4 without code duplication
                 </li>
                 <li>
-                  <span className="font-medium">Testability:</span> Pure
-                  functions are easy to unit test in isolation
+                  <span className="font-medium">Consistency:</span> Same UI/UX
+                  across different parts of the application
                 </li>
                 <li>
                   <span className="font-medium">Maintainability:</span> Changes
-                  to filtering logic only need to happen in one place
+                  to filter components propagate to all uses automatically
                 </li>
                 <li>
-                  <span className="font-medium">Composability:</span> Can easily
-                  add new filter types without modifying components
+                  <span className="font-medium">Testability:</span> Test once,
+                  benefit everywhere
                 </li>
               </ul>
             </div>
