@@ -12,6 +12,7 @@ import PaymentTypeFilter from "./PaymentTypeFilter";
 import { transactions } from "./transactions-data";
 import { Country, PaymentType } from "../shared-types";
 import CurrencyFilter from "../CurrencyFilter";
+import { filterTransactions } from "../filterUtils";
 
 const countries: Country[] = ["All", "ZA", "US", "EUR"];
 const paymentTypes: PaymentType[] = ["All", "card", "bank", "wallet"];
@@ -22,12 +23,9 @@ export default function Question3Client() {
     useState<PaymentType>("All");
 
   const filteredTransactions = useMemo(() => {
-    return transactions.filter((tx) => {
-      const matchesCountry =
-        selectedCountry === "All" || tx.country === selectedCountry;
-      const matchesPaymentType =
-        selectedPaymentType === "All" || tx.paymentType === selectedPaymentType;
-      return matchesCountry && matchesPaymentType;
+    return filterTransactions(transactions, {
+      country: selectedCountry,
+      paymentType: selectedPaymentType,
     });
   }, [selectedCountry, selectedPaymentType]);
 
@@ -279,11 +277,23 @@ export default function Question3Client() {
 
           <div className="space-y-4 text-gray-700 dark:text-gray-300">
             <div>
-              <h4 className="font-semibold mb-2">1. Composable Filtering</h4>
+              <h4 className="font-semibold mb-2">1. Extracted Filter Logic</h4>
+              <p>
+                The filtering logic is now extracted into{" "}
+                <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                  filterUtils.ts
+                </code>
+                , making it reusable across different components and easy to
+                test independently.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-2">2. Composable Filtering</h4>
               <p>
                 Uses a single{" "}
                 <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                  filter
+                  filterTransactions
                 </code>{" "}
                 function with boolean AND logic to combine multiple filters.
                 This avoids nested if-statements and keeps the code clean and
@@ -292,7 +302,7 @@ export default function Question3Client() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">2. useMemo for Performance</h4>
+              <h4 className="font-semibold mb-2">3. useMemo for Performance</h4>
               <p>
                 Wraps the filtering logic in{" "}
                 <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
@@ -306,7 +316,7 @@ export default function Question3Client() {
 
             <div>
               <h4 className="font-semibold mb-2">
-                3. Independent Filter State
+                4. Independent Filter State
               </h4>
               <p>
                 Each filter has its own state variable. They work independently
@@ -316,33 +326,20 @@ export default function Question3Client() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">4. Responsive Design</h4>
+              <h4 className="font-semibold mb-2">5. Responsive Design</h4>
               <p>
                 Uses separate layouts for mobile (cards) and desktop (table).
                 Filter buttons adapt with responsive padding, and the active
-                filters display stacks vertically on small screens with{" "}
-                <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                  flex-col sm:flex-row
-                </code>
-                .
+                filters display stacks vertically on small screens.
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">5. Visual Separation</h4>
+              <h4 className="font-semibold mb-2">6. Separation of Concerns</h4>
               <p>
-                Uses different colors for different filter types (indigo for
-                currency, emerald for payment type) to help users visually
-                distinguish between the two filter categories.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-2">6. Active Filters Display</h4>
-              <p>
-                Shows which filters are currently active, making it clear to
-                users what they&apos;re viewing and helping them understand the
-                filtered results.
+                Business logic (filtering) is separated from presentation logic
+                (React components), making the codebase more maintainable and
+                testable.
               </p>
             </div>
           </div>
@@ -356,26 +353,26 @@ export default function Question3Client() {
           <div className="space-y-4 text-gray-700 dark:text-gray-300">
             <div>
               <h4 className="font-semibold mb-2">
-                When is useMemo Actually Useful?
+                Benefits of Extracted Filter Logic
               </h4>
-              <p className="mb-2">
-                <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                  useMemo
-                </code>{" "}
-                is beneficial when:
-              </p>
               <ul className="list-disc ml-6 space-y-1">
                 <li>
-                  The computation is expensive (large datasets, complex
-                  calculations)
+                  <span className="font-medium">Reusability:</span> Can be used
+                  in multiple components without duplication
                 </li>
-                <li>The result is used multiple times in the same render</li>
-                <li>You need referential equality for dependency arrays</li>
+                <li>
+                  <span className="font-medium">Testability:</span> Pure
+                  functions are easy to unit test in isolation
+                </li>
+                <li>
+                  <span className="font-medium">Maintainability:</span> Changes
+                  to filtering logic only need to happen in one place
+                </li>
+                <li>
+                  <span className="font-medium">Composability:</span> Can easily
+                  add new filter types without modifying components
+                </li>
               </ul>
-              <p className="mt-2">
-                For this small dataset, useMemo isn&apos;t strictly necessary,
-                but it demonstrates the pattern for larger applications.
-              </p>
             </div>
           </div>
         </div>

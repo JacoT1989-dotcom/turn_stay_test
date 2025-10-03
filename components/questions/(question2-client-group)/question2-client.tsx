@@ -3,36 +3,27 @@
 "use client";
 import Link from "next/link";
 import { useState, useMemo } from "react";
+import { Country } from "../shared-types";
 import { transactions } from "./transactions-data";
 import {
   formatAmount,
   formatDate,
   getCurrencyFromCountry,
 } from "../formatters";
-import { Country } from "../shared-types";
 import CurrencyFilter from "../CurrencyFilter";
+import { filterByCountry, getCountryCounts } from "../filterUtils";
 
 const countries: Country[] = ["All", "ZA", "US", "EUR"];
 
 export default function Question2Client() {
   const [selectedCountry, setSelectedCountry] = useState<Country>("All");
 
-  const filteredTransactions =
-    selectedCountry === "All"
-      ? transactions
-      : transactions.filter((tx) => tx.country === selectedCountry);
+  const filteredTransactions = useMemo(() => {
+    return filterByCountry(transactions, selectedCountry);
+  }, [selectedCountry]);
 
-  // Calculate transaction counts for each country
   const transactionCounts = useMemo(() => {
-    const counts: Record<string, number> = {};
-    countries.forEach((country) => {
-      if (country !== "All") {
-        counts[country] = transactions.filter(
-          (tx) => tx.country === country
-        ).length;
-      }
-    });
-    return counts;
+    return getCountryCounts(transactions, countries);
   }, []);
 
   return (
@@ -257,7 +248,19 @@ export default function Question2Client() {
 
           <div className="space-y-4 text-gray-700 dark:text-gray-300">
             <div>
-              <h4 className="font-semibold mb-2">1. Component Composition</h4>
+              <h4 className="font-semibold mb-2">1. Extracted Filter Logic</h4>
+              <p>
+                The filtering logic is now extracted into{" "}
+                <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                  filterUtils.ts
+                </code>
+                , making it reusable across different components and easy to
+                test independently.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-2">2. Component Composition</h4>
               <p>
                 The filter UI is extracted into a separate{" "}
                 <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
@@ -270,7 +273,7 @@ export default function Question2Client() {
 
             <div>
               <h4 className="font-semibold mb-2">
-                2. Controlled Component State
+                3. Controlled Component State
               </h4>
               <p>
                 Uses{" "}
@@ -284,17 +287,17 @@ export default function Question2Client() {
 
             <div>
               <h4 className="font-semibold mb-2">
-                3. Derived State (Filtered List)
+                4. Derived State (Filtered List)
               </h4>
               <p>
-                Creates a filtered list using a simple ternary expression. This
-                is a derived value, not stored in state, which prevents
-                unnecessary state management and keeps data flow clear.
+                Creates a filtered list using the utility function. This is a
+                derived value, not stored in state, which prevents unnecessary
+                state management and keeps data flow clear.
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">4. Memoized Calculations</h4>
+              <h4 className="font-semibold mb-2">5. Memoized Calculations</h4>
               <p>
                 Uses{" "}
                 <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
@@ -306,7 +309,7 @@ export default function Question2Client() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">5. Responsive Design</h4>
+              <h4 className="font-semibold mb-2">6. Responsive Design</h4>
               <p>
                 Uses separate layouts for mobile (cards) and desktop (table).
                 The filter buttons also adapt with{" "}
@@ -318,7 +321,7 @@ export default function Question2Client() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">6. Empty State Handling</h4>
+              <h4 className="font-semibold mb-2">7. Empty State Handling</h4>
               <p>
                 Displays a friendly message when no transactions match the
                 filter, improving user experience.
@@ -334,31 +337,27 @@ export default function Question2Client() {
 
           <div className="space-y-4 text-gray-700 dark:text-gray-300">
             <div>
-              <h4 className="font-semibold mb-2">URL Query vs Local State?</h4>
-              <p className="mb-2">
-                <span className="font-medium">
-                  Local State (current approach):
-                </span>
-              </p>
-              <ul className="list-disc ml-6 mb-2">
-                <li>Pros: Simple, no URL complexity, immediate</li>
-                <li>Cons: Not shareable, lost on refresh</li>
-              </ul>
-              <p className="mb-2">
-                <span className="font-medium">URL Query Parameters:</span>
-              </p>
-              <ul className="list-disc ml-6">
+              <h4 className="font-semibold mb-2">
+                Benefits of Extracted Utilities
+              </h4>
+              <ul className="list-disc ml-6 space-y-1">
                 <li>
-                  Pros: Shareable links, persists on refresh, browser
-                  back/forward works
+                  <span className="font-medium">Testability:</span> Pure
+                  functions in filterUtils.ts can be unit tested in isolation
                 </li>
-                <li>Cons: More complex setup, needs URL synchronization</li>
+                <li>
+                  <span className="font-medium">Reusability:</span> Same filter
+                  logic can be used across Question 2 and Question 3
+                </li>
+                <li>
+                  <span className="font-medium">Maintainability:</span> Changes
+                  to filter logic only need to happen in one place
+                </li>
+                <li>
+                  <span className="font-medium">Clarity:</span> Component
+                  focuses on UI, utilities handle business logic
+                </li>
               </ul>
-              <p className="mt-2">
-                For a simple filter like this, local state is fine. For more
-                complex filtering or if sharing filters is important, URL state
-                would be better.
-              </p>
             </div>
           </div>
         </div>
