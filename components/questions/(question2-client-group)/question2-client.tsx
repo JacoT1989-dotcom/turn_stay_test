@@ -1,89 +1,28 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-
-type Tx = {
-  id: string;
-  amount: number;
-  currency: "ZAR" | "USD" | "EUR";
-  paymentType: "card" | "bank" | "wallet";
-  scheme?: "visa" | "mastercard" | "amex";
-  createdAt: string;
-  fee?: number;
-};
-
-const transactions: Tx[] = [
-  {
-    id: "t_1",
-    amount: 125000,
-    currency: "ZAR",
-    paymentType: "card",
-    scheme: "visa",
-    createdAt: "2025-09-10T10:00:00Z",
-  },
-  {
-    id: "t_2",
-    amount: 56000,
-    currency: "USD",
-    paymentType: "card",
-    scheme: "mastercard",
-    createdAt: "2025-09-11T12:15:00Z",
-    fee: 290,
-  },
-  {
-    id: "t_3",
-    amount: 99000,
-    currency: "ZAR",
-    paymentType: "bank",
-    createdAt: "2025-09-12T09:30:00Z",
-  },
-  {
-    id: "t_4",
-    amount: 45000,
-    currency: "EUR",
-    paymentType: "wallet",
-    createdAt: "2025-09-12T10:05:00Z",
-  },
-  {
-    id: "t_5",
-    amount: 200000,
-    currency: "ZAR",
-    paymentType: "card",
-    scheme: "amex",
-    createdAt: "2025-09-12T12:00:00Z",
-  },
-];
-
-type Currency = "All" | "ZAR" | "USD" | "EUR";
+import { Country } from "./question2-types";
+import { transactions } from "./question2-transactions";
+import {
+  formatAmount,
+  formatDate,
+  getCurrencyFromCountry,
+} from "../formatters";
 
 export default function Question2Client() {
-  const [selectedCurrency, setSelectedCurrency] = useState<Currency>("All");
-
-  const formatAmount = (amount: number): string => {
-    const majorUnits = amount / 100;
-    return majorUnits.toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-  };
-
-  const formatDate = (isoDate: string): string => {
-    const date = new Date(isoDate);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
+  const [selectedCountry, setSelectedCountry] = useState<Country>("All");
 
   const filteredTransactions =
-    selectedCurrency === "All"
+    selectedCountry === "All"
       ? transactions
-      : transactions.filter((tx) => tx.currency === selectedCurrency);
+      : transactions.filter((tx) => tx.country === selectedCountry);
 
-  const currencies: Currency[] = ["All", "ZAR", "USD", "EUR"];
+  const countries: Country[] = ["All", "ZA", "US", "EUR"];
+
+  const getCountryDisplay = (country: Country): string => {
+    if (country === "All") return "All";
+    return getCurrencyFromCountry(country as "ZA" | "US" | "EUR");
+  };
 
   return (
     <div className="min-h-screen py-12 px-4 bg-gray-50 dark:bg-gray-900">
@@ -125,8 +64,8 @@ export default function Question2Client() {
           <div className="space-y-4 text-gray-700 dark:text-gray-300">
             <p className="text-lg">
               <span className="font-semibold">What you need to do:</span> Add a
-              currency filter that allows users to view all transactions or
-              filter by specific currencies (ZAR, USD, EUR).
+              currency filter (tabs or dropdown) that shows &quot;All&quot; by
+              default and allows filtering to ZAR, USD, EUR.
             </p>
 
             <div className="space-y-2">
@@ -168,28 +107,28 @@ export default function Question2Client() {
 
           <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="inline-flex rounded-xl p-1 w-full sm:w-auto overflow-x-auto bg-gray-100 dark:bg-gray-700">
-              {currencies.map((currency) => (
+              {countries.map((country) => (
                 <button
-                  key={currency}
-                  onClick={() => setSelectedCurrency(currency)}
+                  key={country}
+                  onClick={() => setSelectedCountry(country)}
                   className={`relative px-4 sm:px-6 py-2.5 rounded-lg font-medium transition-all duration-200 whitespace-nowrap ${
-                    selectedCurrency === currency
+                    selectedCountry === country
                       ? "bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 shadow-md"
                       : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
                   }`}
                 >
                   <span className="flex items-center gap-2">
-                    {currency}
-                    {currency !== "All" && (
+                    {getCountryDisplay(country)}
+                    {country !== "All" && (
                       <span
                         className={`text-xs px-2 py-0.5 rounded-full ${
-                          selectedCurrency === currency
+                          selectedCountry === country
                             ? "bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300"
                             : "bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300"
                         }`}
                       >
                         {
-                          transactions.filter((tx) => tx.currency === currency)
+                          transactions.filter((tx) => tx.country === country)
                             .length
                         }
                       </span>
@@ -262,10 +201,10 @@ export default function Question2Client() {
                           {formatDate(tx.createdAt)}
                         </td>
                         <td className="py-3 px-4 text-right font-semibold text-gray-800 dark:text-gray-200">
-                          {formatAmount(tx.amount)}
+                          {formatAmount(tx.amount, tx.country)}
                         </td>
                         <td className="py-3 px-4 text-gray-700 dark:text-gray-300">
-                          {tx.currency}
+                          {getCurrencyFromCountry(tx.country)}
                         </td>
                         <td className="py-3 px-4">
                           <span
@@ -311,7 +250,7 @@ export default function Question2Client() {
                     </div>
 
                     <div className="text-2xl font-bold mb-2 text-gray-800 dark:text-gray-200">
-                      {tx.currency} {formatAmount(tx.amount)}
+                      {formatAmount(tx.amount, tx.country)}
                     </div>
 
                     <div className="text-sm text-gray-600 dark:text-gray-400">

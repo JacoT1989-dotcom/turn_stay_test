@@ -1,6 +1,6 @@
-// data/transactions.ts
+// data/question2-transactions.ts
 
-import { Tx } from "./question1-types";
+import { Tx } from "./question2-types";
 
 export const transactions: Tx[] = [
   {

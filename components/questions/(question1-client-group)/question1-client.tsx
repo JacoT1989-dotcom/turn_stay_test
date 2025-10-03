@@ -3,7 +3,11 @@
 
 import Link from "next/link";
 import { transactions } from "./transaction-data";
-import { formatAmount, formatDate } from "./formatters";
+import {
+  formatAmount,
+  formatDate,
+  getCurrencyFromCountry,
+} from "../formatters";
 
 export default function Question1Client() {
   return (
@@ -126,10 +130,10 @@ export default function Question1Client() {
                       {formatDate(tx.createdAt)}
                     </td>
                     <td className="py-3 px-4 text-right font-semibold text-gray-800 dark:text-gray-200">
-                      {formatAmount(tx.amount)}
+                      {formatAmount(tx.amount, tx.country)}
                     </td>
                     <td className="py-3 px-4 text-gray-700 dark:text-gray-300">
-                      {tx.currency}
+                      {getCurrencyFromCountry(tx.country)}
                     </td>
                     <td className="py-3 px-4">
                       <span
@@ -175,7 +179,7 @@ export default function Question1Client() {
                 </div>
 
                 <div className="text-2xl font-bold mb-2 text-gray-800 dark:text-gray-200">
-                  {tx.currency} {formatAmount(tx.amount)}
+                  {formatAmount(tx.amount, tx.country)}
                 </div>
 
                 <div className="text-sm text-gray-600 dark:text-gray-400">
@@ -201,7 +205,9 @@ export default function Question1Client() {
                 <code className="px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
                   toLocaleString()
                 </code>{" "}
-                to add thousand separators and ensure 2 decimal places.
+                to add thousand separators and ensure 2 decimal places. Now
+                automatically formats with the correct currency symbol based on
+                the country code.
               </p>
             </div>
 
