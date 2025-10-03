@@ -1,4 +1,3 @@
-// components/questions/question7-client.tsx
 "use client";
 
 import Link from "next/link";
@@ -136,12 +135,12 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
   const currentPage = searchParams.get("cursor") ? 2 : 1;
 
   return (
-    <div className="min-h-screen py-12 px-4 bg-gray-50">
+    <div className="min-h-screen py-12 px-4 bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto">
         {/* Back Button */}
         <Link
           href="/"
-          className="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-lg transition-colors bg-white text-gray-700 hover:bg-gray-100"
+          className="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-lg transition-colors bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         >
           <svg
             className="w-5 h-5"
@@ -160,21 +159,21 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
         </Link>
 
         {/* Question Header */}
-        <div className="rounded-xl shadow-2xl p-8 mb-8 bg-white">
+        <div className="rounded-xl shadow-2xl p-8 mb-8 bg-white dark:bg-gray-800">
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-4xl font-bold text-indigo-600">
+            <span className="text-4xl font-bold text-indigo-600 dark:text-indigo-400">
               Question 7
             </span>
-            <span className="px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-800">
+            <span className="px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
               Principal
             </span>
           </div>
 
-          <h2 className="text-3xl font-bold mb-4 text-gray-800">
+          <h2 className="text-3xl font-bold mb-4 text-gray-800 dark:text-white">
             Server Data, Caching, and URL State
           </h2>
 
-          <div className="space-y-4 text-gray-700">
+          <div className="space-y-4 text-gray-700 dark:text-gray-300">
             <p className="text-lg">
               <span className="font-semibold">What you need to do:</span> Move
               to server-side rendering with cursor pagination, URL-driven
@@ -197,12 +196,14 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
         </div>
 
         {/* Solution */}
-        <div className="rounded-xl shadow-2xl p-4 md:p-8 bg-white">
-          <h3 className="text-2xl font-bold mb-6 text-indigo-600">Solution</h3>
+        <div className="rounded-xl shadow-2xl p-4 md:p-8 bg-white dark:bg-gray-800">
+          <h3 className="text-2xl font-bold mb-6 text-indigo-600 dark:text-indigo-400">
+            Solution
+          </h3>
 
           {/* Currency Filter */}
           <div className="mb-4">
-            <label className="block text-sm font-semibold mb-2 text-gray-700">
+            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
               Filter by Currency
             </label>
             <div className="flex gap-2 flex-wrap">
@@ -222,8 +223,8 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                         ? !optimisticFilters.currency
                         : optimisticFilters.currency === currency
                     )
-                      ? "bg-indigo-600 text-white shadow-md hover:bg-indigo-700"
-                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                      ? "bg-indigo-600 dark:bg-indigo-500 text-white shadow-md hover:bg-indigo-700 dark:hover:bg-indigo-600"
+                      : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
                   } ${isPending ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   {currency}
@@ -234,7 +235,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
 
           {/* Payment Type Filter */}
           <div className="mb-6">
-            <label className="block text-sm font-semibold mb-2 text-gray-700">
+            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
               Filter by Payment Type
             </label>
             <div className="flex gap-2 flex-wrap">
@@ -255,8 +256,8 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                         ? !optimisticFilters.paymentType
                         : optimisticFilters.paymentType === paymentType
                     )
-                      ? "bg-emerald-600 text-white shadow-md hover:bg-emerald-700"
-                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                      ? "bg-emerald-600 dark:bg-emerald-500 text-white shadow-md hover:bg-emerald-700 dark:hover:bg-emerald-600"
+                      : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
                   } ${isPending ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   {paymentType}
@@ -266,19 +267,19 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
           </div>
 
           {/* Info Bar */}
-          <div className="mb-4 text-sm font-medium text-gray-600">
+          <div className="mb-4 text-sm font-medium text-gray-600 dark:text-gray-400">
             Showing {transactionData?.data.length || 0} of{" "}
             {transactionData?.pagination.total || 0} transactions
           </div>
 
           {/* Table */}
           {isLoading && !transactionData ? (
-            <div className="py-20 text-center">
+            <div className="py-20 text-center text-gray-700 dark:text-gray-300">
               <div className="animate-spin text-4xl mb-4">⏳</div>
               <p>Loading transactions...</p>
             </div>
           ) : transactionData?.data.length === 0 ? (
-            <div className="py-20 text-center text-gray-500">
+            <div className="py-20 text-center text-gray-500 dark:text-gray-400">
               <svg
                 className="mx-auto h-16 w-16 mb-4 opacity-40"
                 fill="none"
@@ -303,23 +304,23 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full border-collapse">
                   <thead>
-                    <tr className="border-b-2 border-gray-200">
-                      <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                    <tr className="border-b-2 border-gray-200 dark:border-gray-700">
+                      <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                         ID
                       </th>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                      <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                         Date
                       </th>
-                      <th className="text-right py-3 px-4 font-semibold text-gray-700">
+                      <th className="text-right py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                         Amount
                       </th>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                      <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                         Currency
                       </th>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                      <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                         Payment Type
                       </th>
-                      <th className="text-right py-3 px-4 font-semibold text-gray-700">
+                      <th className="text-right py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                         Fee
                       </th>
                     </tr>
@@ -333,46 +334,46 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                       return (
                         <tr
                           key={tx.id}
-                          className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                          className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                         >
-                          <td className="py-3 px-4 font-mono text-sm text-gray-600">
+                          <td className="py-3 px-4 font-mono text-sm text-gray-600 dark:text-gray-400">
                             {tx.id}
                           </td>
-                          <td className="py-3 px-4 text-gray-700">
+                          <td className="py-3 px-4 text-gray-700 dark:text-gray-300">
                             {formatDate(tx.createdAt)}
                           </td>
-                          <td className="py-3 px-4 text-right font-semibold text-gray-800">
+                          <td className="py-3 px-4 text-right font-semibold text-gray-800 dark:text-gray-200">
                             {formatAmount(tx.amount)}
                           </td>
-                          <td className="py-3 px-4 text-gray-700">
+                          <td className="py-3 px-4 text-gray-700 dark:text-gray-300">
                             {tx.currency}
                           </td>
                           <td className="py-3 px-4">
                             <span
                               className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                                 tx.paymentType === "card"
-                                  ? "bg-blue-100 text-blue-800"
+                                  ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                                   : tx.paymentType === "bank"
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-purple-100 text-purple-800"
+                                  ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                                  : "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
                               }`}
                             >
                               {tx.paymentType}
                             </span>
                           </td>
-                          <td className="py-3 px-4 text-right text-gray-700">
+                          <td className="py-3 px-4 text-right text-gray-700 dark:text-gray-300">
                             <div className="flex flex-col items-end gap-1">
                               <div className="flex items-center gap-2">
-                                <span className="text-xs text-gray-500">
+                                <span className="text-xs text-gray-500 dark:text-gray-400">
                                   {bpsToPercent(feeBps)}
                                 </span>
                                 {isOverride && (
-                                  <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800">
+                                  <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
                                     override
                                   </span>
                                 )}
                               </div>
-                              <span className="font-semibold">
+                              <span className="font-semibold text-gray-800 dark:text-gray-200">
                                 {formatAmount(feeAmount)}
                               </span>
                             </div>
@@ -394,25 +395,25 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                   return (
                     <div
                       key={tx.id}
-                      className="rounded-lg p-4 border bg-gray-50 border-gray-200"
+                      className="rounded-lg p-4 border bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600"
                     >
                       <div className="flex justify-between items-start mb-3">
-                        <span className="font-mono text-sm font-semibold text-indigo-600">
+                        <span className="font-mono text-sm font-semibold text-indigo-600 dark:text-indigo-400">
                           {tx.id}
                         </span>
                         <div className="flex items-center gap-2">
                           {isOverride && (
-                            <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800">
+                            <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
                               override
                             </span>
                           )}
                           <span
                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                               tx.paymentType === "card"
-                                ? "bg-blue-100 text-blue-800"
+                                ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                                 : tx.paymentType === "bank"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-purple-100 text-purple-800"
+                                ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                                : "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
                             }`}
                           >
                             {tx.paymentType}
@@ -420,20 +421,20 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                         </div>
                       </div>
 
-                      <div className="text-2xl font-bold mb-2 text-gray-800">
+                      <div className="text-2xl font-bold mb-2 text-gray-800 dark:text-gray-200">
                         {tx.currency} {formatAmount(tx.amount)}
                       </div>
 
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
                           Fee ({bpsToPercent(feeBps)})
                         </span>
-                        <span className="text-lg font-semibold text-gray-800">
+                        <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">
                           {formatAmount(feeAmount)}
                         </span>
                       </div>
 
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
                         {formatDate(tx.createdAt)}
                       </div>
                     </div>
@@ -454,12 +455,14 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                 currentPage === 1 || isPending
                   ? "opacity-50 cursor-not-allowed"
                   : ""
-              } bg-white text-gray-700 border border-gray-300 hover:bg-gray-50`}
+              } bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700`}
             >
               ← Previous
             </button>
 
-            <span className="text-sm text-gray-600">Page {currentPage}</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              Page {currentPage}
+            </span>
 
             <button
               onClick={handleNextPage}
@@ -468,7 +471,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                 !transactionData?.pagination.hasMore || isPending
                   ? "opacity-50 cursor-not-allowed"
                   : ""
-              } bg-white text-gray-700 border border-gray-300 hover:bg-gray-50`}
+              } bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700`}
             >
               Next →
             </button>
@@ -476,12 +479,12 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
         )}
 
         {/* Key Concepts */}
-        <div className="rounded-xl shadow-2xl p-8 mt-8 bg-white">
-          <h3 className="text-2xl font-bold mb-4 text-indigo-600">
+        <div className="rounded-xl shadow-2xl p-8 mt-8 bg-white dark:bg-gray-800">
+          <h3 className="text-2xl font-bold mb-4 text-indigo-600 dark:text-indigo-400">
             Key Concepts Demonstrated
           </h3>
 
-          <div className="space-y-4 text-gray-700">
+          <div className="space-y-4 text-gray-700 dark:text-gray-300">
             <div>
               <h4 className="font-semibold mb-2">
                 1. Server Components vs Client Components

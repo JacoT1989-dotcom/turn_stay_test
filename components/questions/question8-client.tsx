@@ -1,4 +1,3 @@
-// components/questions/question8-client.tsx
 "use client";
 
 import Link from "next/link";
@@ -104,12 +103,12 @@ export default function Question8Client() {
     : null;
 
   return (
-    <div className="min-h-screen py-12 px-4 bg-gray-50">
+    <div className="min-h-screen py-12 px-4 bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto">
         {/* Back Button */}
         <Link
           href="/"
-          className="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-lg transition-colors bg-white text-gray-700 hover:bg-gray-100"
+          className="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-lg transition-colors bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         >
           <svg
             className="w-5 h-5"
@@ -128,21 +127,21 @@ export default function Question8Client() {
         </Link>
 
         {/* Question Header */}
-        <div className="rounded-xl shadow-2xl p-8 mb-8 bg-white">
+        <div className="rounded-xl shadow-2xl p-8 mb-8 bg-white dark:bg-gray-800">
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-4xl font-bold text-indigo-600">
+            <span className="text-4xl font-bold text-indigo-600 dark:text-indigo-400">
               Question 8
             </span>
-            <span className="px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-800">
+            <span className="px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
               Principal
             </span>
           </div>
 
-          <h2 className="text-3xl font-bold mb-4 text-gray-800">
+          <h2 className="text-3xl font-bold mb-4 text-gray-800 dark:text-white">
             Multi-Tenant Fee Policy + Overrides Matrix
           </h2>
 
-          <div className="space-y-4 text-gray-700">
+          <div className="space-y-4 text-gray-700 dark:text-gray-300">
             <p className="text-lg">
               <span className="font-semibold">What you need to do:</span> Build
               a policy system with deterministic fee resolution, specificity
@@ -172,28 +171,40 @@ export default function Question8Client() {
         </div>
 
         {/* Tenant Info */}
-        <div className="rounded-xl shadow-2xl p-6 mb-8 bg-white">
-          <h3 className="text-xl font-bold mb-3 text-indigo-600">
+        <div className="rounded-xl shadow-2xl p-6 mb-8 bg-white dark:bg-gray-800">
+          <h3 className="text-xl font-bold mb-3 text-indigo-600 dark:text-indigo-400">
             Current Tenant Policy
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-gray-700">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-gray-700 dark:text-gray-300">
             <div>
-              <div className="text-sm text-gray-500">Tenant</div>
-              <div className="font-semibold">{mockTenantPolicy.tenantName}</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                Tenant
+              </div>
+              <div className="font-semibold text-gray-800 dark:text-gray-200">
+                {mockTenantPolicy.tenantName}
+              </div>
             </div>
             <div>
-              <div className="text-sm text-gray-500">Version</div>
-              <div className="font-semibold">v{mockTenantPolicy.version}</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                Version
+              </div>
+              <div className="font-semibold text-gray-800 dark:text-gray-200">
+                v{mockTenantPolicy.version}
+              </div>
             </div>
             <div>
-              <div className="text-sm text-gray-500">Rules</div>
-              <div className="font-semibold">
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                Rules
+              </div>
+              <div className="font-semibold text-gray-800 dark:text-gray-200">
                 {mockTenantPolicy.rules.filter((r) => r.enabled).length} active
               </div>
             </div>
             <div>
-              <div className="text-sm text-gray-500">Default Card Fee</div>
-              <div className="font-semibold">
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                Default Card Fee
+              </div>
+              <div className="font-semibold text-gray-800 dark:text-gray-200">
                 {(mockTenantPolicy.defaultFees.card / 100).toFixed(2)}%
               </div>
             </div>
@@ -201,8 +212,8 @@ export default function Question8Client() {
         </div>
 
         {/* Transactions Table/Cards */}
-        <div className="rounded-xl shadow-2xl p-4 md:p-8 bg-white">
-          <h3 className="text-2xl font-bold mb-6 text-indigo-600">
+        <div className="rounded-xl shadow-2xl p-4 md:p-8 bg-white dark:bg-gray-800">
+          <h3 className="text-2xl font-bold mb-6 text-indigo-600 dark:text-indigo-400">
             Transactions with Policy Resolution
           </h3>
 
@@ -210,26 +221,26 @@ export default function Question8Client() {
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
-                <tr className="border-b-2 border-gray-200">
-                  <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                <tr className="border-b-2 border-gray-200 dark:border-gray-700">
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                     ID
                   </th>
-                  <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                     Date
                   </th>
-                  <th className="text-right py-3 px-4 font-semibold text-gray-700">
+                  <th className="text-right py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                     Amount
                   </th>
-                  <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                     Currency
                   </th>
-                  <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                     Payment
                   </th>
-                  <th className="text-right py-3 px-4 font-semibold text-gray-700">
+                  <th className="text-right py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                     Fee
                   </th>
-                  <th className="text-center py-3 px-4 font-semibold text-gray-700">
+                  <th className="text-center py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                     Why?
                   </th>
                 </tr>
@@ -239,50 +250,52 @@ export default function Question8Client() {
                   ({ transaction: tx, resolution }) => (
                     <tr
                       key={tx.id}
-                      className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                      className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     >
-                      <td className="py-3 px-4 font-mono text-sm text-gray-600">
+                      <td className="py-3 px-4 font-mono text-sm text-gray-600 dark:text-gray-400">
                         {tx.id}
                       </td>
-                      <td className="py-3 px-4 text-gray-700">
+                      <td className="py-3 px-4 text-gray-700 dark:text-gray-300">
                         {formatDate(tx.createdAt)}
                       </td>
-                      <td className="py-3 px-4 text-right font-semibold text-gray-800">
+                      <td className="py-3 px-4 text-right font-semibold text-gray-800 dark:text-gray-200">
                         {formatAmount(tx.amount)}
                       </td>
-                      <td className="py-3 px-4 text-gray-700">{tx.currency}</td>
+                      <td className="py-3 px-4 text-gray-700 dark:text-gray-300">
+                        {tx.currency}
+                      </td>
                       <td className="py-3 px-4">
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                             tx.paymentType === "card"
-                              ? "bg-blue-100 text-blue-800"
+                              ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                               : tx.paymentType === "bank"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-purple-100 text-purple-800"
+                              ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                              : "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
                           }`}
                         >
                           {tx.paymentType}
                           {tx.scheme && ` • ${tx.scheme}`}
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-right text-gray-700">
+                      <td className="py-3 px-4 text-right text-gray-700 dark:text-gray-300">
                         <div className="flex flex-col items-end gap-1">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-500">
+                            <span className="text-xs text-gray-500 dark:text-gray-400">
                               {(resolution.feeBps / 100).toFixed(2)}%
                             </span>
                             {resolution.finalRule && (
-                              <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                              <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                                 policy
                               </span>
                             )}
                             {resolution.conflict && (
-                              <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                              <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
                                 conflict
                               </span>
                             )}
                           </div>
-                          <span className="font-semibold">
+                          <span className="font-semibold text-gray-800 dark:text-gray-200">
                             {formatAmount(resolution.feeAmount)}
                           </span>
                         </div>
@@ -290,7 +303,7 @@ export default function Question8Client() {
                       <td className="py-3 px-4 text-center">
                         <button
                           onClick={() => setSelectedTransaction(tx.id)}
-                          className="px-3 py-1 rounded-lg text-sm font-medium transition-all bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
+                          className="px-3 py-1 rounded-lg text-sm font-medium transition-all bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-800"
                         >
                           Explain
                         </button>
@@ -307,30 +320,30 @@ export default function Question8Client() {
             {transactionsWithPolicy.map(({ transaction: tx, resolution }) => (
               <div
                 key={tx.id}
-                className="rounded-lg p-4 border bg-gray-50 border-gray-200"
+                className="rounded-lg p-4 border bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600"
               >
                 <div className="flex justify-between items-start mb-3">
-                  <span className="font-mono text-sm font-semibold text-indigo-600">
+                  <span className="font-mono text-sm font-semibold text-indigo-600 dark:text-indigo-400">
                     {tx.id}
                   </span>
                   <div className="flex items-center gap-2 flex-wrap justify-end">
                     {resolution.finalRule && (
-                      <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                      <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                         policy
                       </span>
                     )}
                     {resolution.conflict && (
-                      <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                      <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
                         conflict
                       </span>
                     )}
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         tx.paymentType === "card"
-                          ? "bg-blue-100 text-blue-800"
+                          ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                           : tx.paymentType === "bank"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-purple-100 text-purple-800"
+                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                          : "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
                       }`}
                     >
                       {tx.paymentType}
@@ -339,26 +352,26 @@ export default function Question8Client() {
                   </div>
                 </div>
 
-                <div className="text-2xl font-bold mb-2 text-gray-800">
+                <div className="text-2xl font-bold mb-2 text-gray-800 dark:text-gray-200">
                   {tx.currency} {formatAmount(tx.amount)}
                 </div>
 
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
                     Fee ({(resolution.feeBps / 100).toFixed(2)}%)
                   </span>
-                  <span className="text-lg font-semibold text-gray-800">
+                  <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">
                     {formatAmount(resolution.feeAmount)}
                   </span>
                 </div>
 
-                <div className="text-sm mb-3 text-gray-600">
+                <div className="text-sm mb-3 text-gray-600 dark:text-gray-400">
                   {formatDate(tx.createdAt)}
                 </div>
 
                 <button
                   onClick={() => setSelectedTransaction(tx.id)}
-                  className="w-full px-4 py-2.5 rounded-lg font-semibold transition-all shadow-md bg-indigo-600 text-white hover:bg-indigo-700"
+                  className="w-full px-4 py-2.5 rounded-lg font-semibold transition-all shadow-md bg-indigo-600 dark:bg-indigo-500 text-white hover:bg-indigo-700 dark:hover:bg-indigo-600"
                 >
                   Explain This Fee
                 </button>
@@ -370,53 +383,61 @@ export default function Question8Client() {
         {/* Explainability Modal */}
         {selectedTxData && (
           <div
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 flex items-center justify-center z-50 p-4"
             onClick={() => setSelectedTransaction(null)}
           >
             <div
-              className="rounded-xl shadow-2xl p-6 md:p-8 max-w-3xl w-full max-h-[80vh] overflow-y-auto bg-white"
+              className="rounded-xl shadow-2xl p-6 md:p-8 max-w-3xl w-full max-h-[80vh] overflow-y-auto bg-white dark:bg-gray-800"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl md:text-2xl font-bold text-indigo-600">
+                <h3 className="text-xl md:text-2xl font-bold text-indigo-600 dark:text-indigo-400">
                   Why This Fee? - {selectedTxData.transaction.id}
                 </h3>
                 <button
                   onClick={() => setSelectedTransaction(null)}
-                  className="p-2 rounded-lg transition-colors hover:bg-gray-100"
+                  className="p-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
                 >
                   ✕
                 </button>
               </div>
 
               {/* Transaction Summary */}
-              <div className="p-4 rounded-lg mb-6 bg-gray-50">
+              <div className="p-4 rounded-lg mb-6 bg-gray-50 dark:bg-gray-700">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <div className="text-sm text-gray-500">Amount</div>
-                    <div className="font-semibold text-gray-800">
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      Amount
+                    </div>
+                    <div className="font-semibold text-gray-800 dark:text-gray-200">
                       {formatAmount(selectedTxData.transaction.amount)}{" "}
                       {selectedTxData.transaction.currency}
                     </div>
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">Payment Method</div>
-                    <div className="font-semibold capitalize text-gray-800">
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      Payment Method
+                    </div>
+                    <div className="font-semibold capitalize text-gray-800 dark:text-gray-200">
                       {selectedTxData.transaction.paymentType}
                       {selectedTxData.transaction.scheme &&
                         ` • ${selectedTxData.transaction.scheme}`}
                     </div>
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">Final Fee</div>
-                    <div className="font-semibold text-gray-800">
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      Final Fee
+                    </div>
+                    <div className="font-semibold text-gray-800 dark:text-gray-200">
                       {(selectedTxData.resolution.feeBps / 100).toFixed(2)}% ={" "}
                       {formatAmount(selectedTxData.resolution.feeAmount)}
                     </div>
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">Rule Applied</div>
-                    <div className="font-semibold text-gray-800">
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      Rule Applied
+                    </div>
+                    <div className="font-semibold text-gray-800 dark:text-gray-200">
                       {selectedTxData.resolution.finalRule?.name ||
                         "Base Policy"}
                     </div>
@@ -426,17 +447,19 @@ export default function Question8Client() {
 
               {/* Conflict Warning */}
               {selectedTxData.resolution.conflict && (
-                <div className="p-4 rounded-lg mb-6 bg-red-50 border border-red-200">
+                <div className="p-4 rounded-lg mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
                   <div className="flex items-start gap-3">
-                    <span className="text-red-600 text-xl">⚠️</span>
+                    <span className="text-red-600 dark:text-red-400 text-xl">
+                      ⚠️
+                    </span>
                     <div>
-                      <h4 className="font-semibold text-red-800 mb-1">
+                      <h4 className="font-semibold text-red-800 dark:text-red-300 mb-1">
                         Policy Conflict Detected
                       </h4>
-                      <p className="text-sm text-red-700 mb-2">
+                      <p className="text-sm text-red-700 dark:text-red-400 mb-2">
                         {selectedTxData.resolution.conflict.message}
                       </p>
-                      <div className="text-sm text-red-600">
+                      <div className="text-sm text-red-600 dark:text-red-400">
                         <div className="font-medium">Conflicting rules:</div>
                         <ul className="list-disc ml-5 mt-1">
                           {selectedTxData.resolution.conflict.rules.map(
@@ -455,7 +478,7 @@ export default function Question8Client() {
 
               {/* Resolution Trace */}
               <div>
-                <h4 className="text-lg font-semibold mb-4 text-gray-800">
+                <h4 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">
                   Resolution Steps
                 </h4>
                 <div className="space-y-3">
@@ -464,8 +487,8 @@ export default function Question8Client() {
                       key={step.step}
                       className={`p-4 rounded-lg border ${
                         step.type === "conflict"
-                          ? "border-red-200 bg-red-50"
-                          : "border-gray-200 bg-gray-50"
+                          ? "border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20"
+                          : "border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700"
                       }`}
                     >
                       <div className="flex items-start gap-3">
@@ -473,17 +496,17 @@ export default function Question8Client() {
                           className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
                             step.type === "conflict"
                               ? "bg-red-500 text-white"
-                              : "bg-indigo-100 text-indigo-700"
+                              : "bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300"
                           }`}
                         >
                           {step.step}
                         </div>
                         <div className="flex-1">
-                          <p className="text-sm whitespace-pre-line text-gray-800">
+                          <p className="text-sm whitespace-pre-line text-gray-800 dark:text-gray-200">
                             {step.description}
                           </p>
                           {step.feeBps !== undefined && (
-                            <div className="mt-1 text-xs text-gray-500">
+                            <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                               Fee: {(step.feeBps / 100).toFixed(2)}%
                             </div>
                           )}
@@ -496,26 +519,26 @@ export default function Question8Client() {
 
               {/* Rule Details */}
               {selectedTxData.resolution.finalRule && (
-                <div className="mt-6 p-4 rounded-lg bg-gray-50">
-                  <h4 className="text-sm font-semibold mb-2 text-gray-800">
+                <div className="mt-6 p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
+                  <h4 className="text-sm font-semibold mb-2 text-gray-800 dark:text-gray-200">
                     Applied Rule Details
                   </h4>
                   <div className="text-sm space-y-1">
-                    <div className="text-gray-700">
+                    <div className="text-gray-700 dark:text-gray-300">
                       <span className="font-medium">ID:</span>{" "}
                       {selectedTxData.resolution.finalRule.id}
                     </div>
-                    <div className="text-gray-700">
+                    <div className="text-gray-700 dark:text-gray-300">
                       <span className="font-medium">Name:</span>{" "}
                       {selectedTxData.resolution.finalRule.name}
                     </div>
                     {selectedTxData.resolution.finalRule.description && (
-                      <div className="text-gray-700">
+                      <div className="text-gray-700 dark:text-gray-300">
                         <span className="font-medium">Description:</span>{" "}
                         {selectedTxData.resolution.finalRule.description}
                       </div>
                     )}
-                    <div className="text-gray-700">
+                    <div className="text-gray-700 dark:text-gray-300">
                       <span className="font-medium">Criteria:</span>{" "}
                       {getRuleCriteria(selectedTxData.resolution.finalRule)}
                     </div>
@@ -525,7 +548,7 @@ export default function Question8Client() {
 
               <button
                 onClick={() => setSelectedTransaction(null)}
-                className="mt-6 w-full px-4 py-2 rounded-lg font-medium transition-colors bg-gray-200 text-gray-700 hover:bg-gray-300"
+                className="mt-6 w-full px-4 py-2 rounded-lg font-medium transition-colors bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
               >
                 Close
               </button>
@@ -534,12 +557,12 @@ export default function Question8Client() {
         )}
 
         {/* Key Concepts */}
-        <div className="rounded-xl shadow-2xl p-8 mt-8 bg-white">
-          <h3 className="text-2xl font-bold mb-4 text-indigo-600">
+        <div className="rounded-xl shadow-2xl p-8 mt-8 bg-white dark:bg-gray-800">
+          <h3 className="text-2xl font-bold mb-4 text-indigo-600 dark:text-indigo-400">
             Key Concepts Demonstrated
           </h3>
 
-          <div className="space-y-4 text-gray-700">
+          <div className="space-y-4 text-gray-700 dark:text-gray-300">
             <div>
               <h4 className="font-semibold mb-2">
                 1. Deterministic Policy Resolution
