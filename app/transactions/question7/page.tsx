@@ -1,5 +1,10 @@
 // app/transactions/question7/page.tsx
 import { Suspense } from "react";
+import {
+  HydrationBoundary,
+  QueryClient,
+  dehydrate,
+} from "@tanstack/react-query";
 import Question7Client from "@/components/questions/(question7-client-group)/question7-client";
 import { getTransactions } from "@/lib/services/transaction-service";
 import { transactionQuerySchema } from "@/lib/validation/transaction-schema";
@@ -23,12 +28,29 @@ export default async function Question7Page({
     limit: params.limit,
   });
 
-  // Fetch data on the server
-  const initialData = await getTransactions(validatedParams);
+  // Create a new QueryClient instance for this request
+  // This is important: each request gets its own client to avoid sharing state
+  const queryClient = new QueryClient();
 
+  // Prefetch data on the server and populate the cache
+  // This runs on the server before the page is sent to the client
+  await queryClient.prefetchQuery({
+    queryKey: [
+      "transactions",
+      validatedParams.currency,
+      validatedParams.paymentType,
+      validatedParams.cursor,
+    ],
+    queryFn: () => getTransactions(validatedParams),
+  });
+
+  // dehydrate() serializes the QueryClient cache so it can be sent to the client
+  // HydrationBoundary rehydrates this data on the client side
   return (
     <Suspense fallback={<LoadingSkeleton />}>
-      <Question7Client initialData={initialData} />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <Question7Client filters={validatedParams} />
+      </HydrationBoundary>
     </Suspense>
   );
 }
@@ -48,9 +70,7 @@ function LoadingSkeleton() {
 
 // Generate metadata for SEO
 export async function generateMetadata({ searchParams }: Question7PageProps) {
-  // Await searchParams before accessing its properties
   const params = await searchParams;
-
   const currency = params.currency || "All";
   const paymentType = params.paymentType || "All";
 

@@ -1,23 +1,31 @@
+// components/questions/(question7-client-group)/question7-client.tsx
+
 "use client";
 
 import Link from "next/link";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
-import type { TransactionResponse } from "@/lib/types/transaction";
+import type { TransactionFilters } from "@/lib/types/transaction";
 import PaymentTypeFilter from "@/components/questions/PaymentTypeFilter";
 import type { Country, PaymentType } from "@/components/questions/shared-types";
 import CurrencyFilter from "../CurrencyFilter";
 import TransactionTable from "./TransactionTable";
+import { useTransactions } from "@/lib/hooks/use-transactions";
 
 interface Question7ClientProps {
-  initialData: TransactionResponse;
+  filters: TransactionFilters;
 }
 
-export default function Question7Client({ initialData }: Question7ClientProps) {
+export default function Question7Client({ filters }: Question7ClientProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
+
+  // Use the React Query hook - it will use the prefetched data from the server
+  // On first render, this data comes from HydrationBoundary (no loading state!)
+  // On subsequent filter changes, it fetches from the API route
+  const { data: transactionData, isLoading } = useTransactions(filters);
 
   // Current filters from URL - these are our source of truth
   const currentCurrency = searchParams.get("currency");
@@ -61,9 +69,6 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
 
   const selectedCountry = getCountryFromCurrency(currentCurrency);
   const selectedPaymentType = getPaymentTypeWithAll(currentPaymentType);
-
-  // Use initialData directly
-  const transactionData = initialData;
 
   const handleCurrencyChange = (country: Country) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -124,6 +129,9 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
   const paymentTypes: PaymentType[] = ["All", "card", "bank", "wallet"];
   const currentPage = searchParams.get("cursor") ? 2 : 1;
 
+  // Show loading state while transitioning OR while React Query is fetching
+  const showPending = isPending || isLoading;
+
   return (
     <div className="min-h-screen py-12 px-4 bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto">
@@ -160,27 +168,27 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
           </div>
 
           <h2 className="text-3xl font-bold mb-4 text-gray-800 dark:text-white">
-            Server Data, Caching, and URL State
+            React Query with Server Preloading
           </h2>
 
           <div className="space-y-4 text-gray-700 dark:text-gray-300">
             <p className="text-lg">
-              <span className="font-semibold">What you need to do:</span> Move
-              to server-side rendering with cursor pagination, URL-driven
-              filters, caching strategy, and smooth transitions.
+              <span className="font-semibold">What you need to do:</span> Use
+              React Query with server-side data preloading, URL-driven filters,
+              and smooth client-side transitions.
             </p>
 
             <div className="space-y-2">
               <p className="font-semibold">Key Features Implemented:</p>
               <ul className="list-disc ml-6 space-y-1">
-                <li>Server-side data fetching with Next.js App Router</li>
+                <li>React Query with server-side prefetching</li>
+                <li>HydrationBoundary for seamless SSR to CSR transition</li>
                 <li>URL as single source of truth (shareable links)</li>
+                <li>Client-side caching and optimistic updates</li>
                 <li>Cursor-based pagination</li>
-                <li>Server-side rendering with no client fetching</li>
                 <li>Smooth transitions with useTransition</li>
+                <li>Automatic background refetching</li>
                 <li>Input validation with Zod</li>
-                <li>Reusable filter components</li>
-                <li>Separated table display component</li>
               </ul>
             </div>
           </div>
@@ -195,7 +203,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
           {/* Currency Filter */}
           <div
             className={`mb-4 ${
-              isPending ? "opacity-50 pointer-events-none" : ""
+              showPending ? "opacity-50 pointer-events-none" : ""
             }`}
           >
             <CurrencyFilter
@@ -210,7 +218,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
           {/* Payment Type Filter */}
           <div
             className={`mb-6 ${
-              isPending ? "opacity-50 pointer-events-none" : ""
+              showPending ? "opacity-50 pointer-events-none" : ""
             }`}
           >
             <PaymentTypeFilter
@@ -225,7 +233,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
           <div className="mb-4 text-sm font-medium text-gray-600 dark:text-gray-400">
             Showing {transactionData?.data.length || 0} of{" "}
             {transactionData?.pagination.total || 0} transactions
-            {isPending && (
+            {showPending && (
               <span className="ml-2 text-indigo-600 dark:text-indigo-400 animate-pulse">
                 (updating...)
               </span>
@@ -235,7 +243,7 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
           {/* Transaction Table */}
           <TransactionTable
             transactions={transactionData?.data || []}
-            isPending={isPending}
+            isPending={showPending}
           />
         </div>
 
@@ -244,9 +252,9 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
           <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <button
               onClick={handlePreviousPage}
-              disabled={currentPage === 1 || isPending}
+              disabled={currentPage === 1 || showPending}
               className={`w-full sm:w-auto px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-                currentPage === 1 || isPending
+                currentPage === 1 || showPending
                   ? "opacity-50 cursor-not-allowed"
                   : ""
               } bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700`}
@@ -260,9 +268,9 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
 
             <button
               onClick={handleNextPage}
-              disabled={!transactionData?.pagination.hasMore || isPending}
+              disabled={!transactionData?.pagination.hasMore || showPending}
               className={`w-full sm:w-auto px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-                !transactionData?.pagination.hasMore || isPending
+                !transactionData?.pagination.hasMore || showPending
                   ? "opacity-50 cursor-not-allowed"
                   : ""
               } bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700`}
@@ -281,85 +289,61 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
           <div className="space-y-4 text-gray-700 dark:text-gray-300">
             <div>
               <h4 className="font-semibold mb-2">
-                1. Server Components vs Client Components
+                1. React Query Server Prefetching
               </h4>
               <p>
-                The page.tsx is a Server Component that fetches data on the
-                server, while question7-client.tsx handles interactivity. This
-                provides better performance and SEO.
+                Data is prefetched on the server using QueryClient.prefetchQuery
+                and dehydrated into the page. The client rehydrates this data
+                instantly, eliminating loading states on initial page load.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-2">2. HydrationBoundary</h4>
+              <p>
+                Wraps the client component to seamlessly transfer server-fetched
+                data to the client-side React Query cache. This provides instant
+                data availability without additional network requests.
               </p>
             </div>
 
             <div>
               <h4 className="font-semibold mb-2">
-                2. URL as Single Source of Truth
+                3. Automatic Cache Management
               </h4>
               <p>
-                All filter and pagination state lives in the URL. This makes
-                links shareable, enables browser back/forward, and provides
-                clear state management. No client-side fetching is needed.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-2">3. Cursor-Based Pagination</h4>
-              <p>
-                Uses cursor pagination instead of offset-based for better
-                performance with large datasets. The cursor is the ID of the
-                last item.
+                React Query handles caching, stale-while-revalidate patterns,
+                and background refetching. Filter changes automatically fetch
+                fresh data while keeping the UI responsive.
               </p>
             </div>
 
             <div>
               <h4 className="font-semibold mb-2">
-                4. Server-Side Rendering Benefits
+                4. URL-Driven State with Client Caching
               </h4>
               <p>
-                Data is fetched on the server and passed as initialData. Filter
-                changes trigger server re-renders through URL updates, ensuring
-                fresh data without client-side API calls.
+                URL params drive the query key, ensuring shareable links while
+                React Query provides intelligent caching. Navigation between
+                previously visited filter combinations is instant.
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">5. Smooth Transitions</h4>
+              <h4 className="font-semibold mb-2">5. Optimistic UI Updates</h4>
               <p>
-                Uses useTransition hook to provide non-blocking updates when
-                filters change. The UI remains interactive while the server
-                fetches new data, with visual feedback through opacity changes.
+                useTransition provides non-blocking navigation while React Query
+                manages loading states. Users can continue interacting with the
+                UI while data fetches in the background.
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">6. Responsive Design</h4>
+              <h4 className="font-semibold mb-2">6. Type-Safe Query Keys</h4>
               <p>
-                Table view on desktop, card view on mobile. Pagination buttons
-                stack vertically on mobile with full-width buttons for better
-                touch targets, then switch to horizontal layout on larger
-                screens.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-2">
-                7. Component Separation and Reusability
-              </h4>
-              <p>
-                Uses shared CurrencyFilter, PaymentTypeFilter, and
-                TransactionTable components for consistent UI patterns and
-                better code organization. Each component has a single
-                responsibility.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-2">
-                8. No Over-Fetching Pattern
-              </h4>
-              <p>
-                By using server components and URL state, we eliminate
-                unnecessary client-side fetching. Data is only fetched once per
-                page load on the server.
+                Query keys are derived from validated filter parameters,
+                ensuring type safety and cache consistency across the
+                application.
               </p>
             </div>
           </div>
