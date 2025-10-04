@@ -3,15 +3,15 @@
 import Link from "next/link";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
-import { bpsToPercent, calcFeeAmount, getFeeBps } from "@/lib/utils/fee-utils";
-import type { TransactionResponse, Transaction } from "@/lib/types/transaction";
+import type { TransactionResponse } from "@/lib/types/transaction";
+import PaymentTypeFilter from "@/components/questions/PaymentTypeFilter";
+import type { Country, PaymentType } from "@/components/questions/shared-types";
+import CurrencyFilter from "../CurrencyFilter";
+import TransactionTable from "./TransactionTable";
 
 interface Question7ClientProps {
   initialData: TransactionResponse;
 }
-
-type Currency = "ZAR" | "USD" | "EUR" | undefined;
-type PaymentType = "card" | "bank" | "wallet" | undefined;
 
 export default function Question7Client({ initialData }: Question7ClientProps) {
   const router = useRouter();
@@ -20,59 +20,81 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
   const [isPending, startTransition] = useTransition();
 
   // Current filters from URL - these are our source of truth
-  const currentCurrency = searchParams.get("currency") as Currency;
-  const currentPaymentType = searchParams.get("paymentType") as PaymentType;
+  const currentCurrency = searchParams.get("currency");
+  const currentPaymentType = searchParams.get("paymentType");
+
+  // Map currency to country format for the filter component
+  const getCountryFromCurrency = (currency: string | null): Country => {
+    if (!currency) return "All";
+    switch (currency) {
+      case "ZAR":
+        return "ZA";
+      case "USD":
+        return "US";
+      case "EUR":
+        return "EUR";
+      default:
+        return "All";
+    }
+  };
+
+  // Map country back to currency for URL params
+  const getCurrencyFromCountry = (country: Country): string | undefined => {
+    if (country === "All") return undefined;
+    switch (country) {
+      case "ZA":
+        return "ZAR";
+      case "US":
+        return "USD";
+      case "EUR":
+        return "EUR";
+      default:
+        return undefined;
+    }
+  };
+
+  // Map payment type with "All" option
+  const getPaymentTypeWithAll = (paymentType: string | null): PaymentType => {
+    if (!paymentType) return "All";
+    return paymentType as PaymentType;
+  };
+
+  const selectedCountry = getCountryFromCurrency(currentCurrency);
+  const selectedPaymentType = getPaymentTypeWithAll(currentPaymentType);
 
   // Use initialData directly
   const transactionData = initialData;
 
-  const formatAmount = (amount: number): string => {
-    const majorUnits = amount / 100;
-    return majorUnits.toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-  };
-
-  const formatDate = (isoDate: string): string => {
-    const date = new Date(isoDate);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  // Check if transaction has override fee
-  const hasOverride = (tx: Transaction): boolean => {
-    return tx.fee !== undefined;
-  };
-
-  const updateFilters = (updates: {
-    currency?: Currency;
-    paymentType?: PaymentType;
-  }) => {
+  const handleCurrencyChange = (country: Country) => {
     const params = new URLSearchParams(searchParams.toString());
 
-    // Update URL params
-    if (updates.currency) {
-      params.set("currency", updates.currency);
-    } else if (updates.currency === undefined) {
+    const currency = getCurrencyFromCountry(country);
+    if (currency) {
+      params.set("currency", currency);
+    } else {
       params.delete("currency");
-    }
-
-    if (updates.paymentType) {
-      params.set("paymentType", updates.paymentType);
-    } else if (updates.paymentType === undefined) {
-      params.delete("paymentType");
     }
 
     // Reset cursor when filters change
     params.delete("cursor");
 
-    // Use startTransition for the navigation
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    });
+  };
+
+  const handlePaymentTypeChange = (paymentType: PaymentType) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (paymentType === "All") {
+      params.delete("paymentType");
+    } else {
+      params.set("paymentType", paymentType);
+    }
+
+    // Reset cursor when filters change
+    params.delete("cursor");
+
     startTransition(() => {
       router.push(`${pathname}?${params.toString()}`, { scroll: false });
     });
@@ -98,13 +120,8 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
     });
   };
 
-  const currencies: ("All" | Currency)[] = ["All", "ZAR", "USD", "EUR"];
-  const paymentTypes: ("All" | PaymentType)[] = [
-    "All",
-    "card",
-    "bank",
-    "wallet",
-  ];
+  const countries: Country[] = ["All", "ZA", "US", "EUR"];
+  const paymentTypes: PaymentType[] = ["All", "card", "bank", "wallet"];
   const currentPage = searchParams.get("cursor") ? 2 : 1;
 
   return (
@@ -162,6 +179,8 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
                 <li>Server-side rendering with no client fetching</li>
                 <li>Smooth transitions with useTransition</li>
                 <li>Input validation with Zod</li>
+                <li>Reusable filter components</li>
+                <li>Separated table display component</li>
               </ul>
             </div>
           </div>
@@ -174,68 +193,32 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
           </h3>
 
           {/* Currency Filter */}
-          <div className="mb-4">
-            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
-              Filter by Currency
-            </label>
-            <div className="flex gap-2 flex-wrap">
-              {currencies.map((currency) => (
-                <button
-                  key={currency}
-                  onClick={() =>
-                    updateFilters({
-                      currency: currency === "All" ? undefined : currency,
-                      paymentType: currentPaymentType,
-                    })
-                  }
-                  disabled={isPending}
-                  className={`px-3 md:px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-                    (
-                      currency === "All"
-                        ? !currentCurrency
-                        : currentCurrency === currency
-                    )
-                      ? "bg-indigo-600 dark:bg-indigo-500 text-white shadow-md hover:bg-indigo-700 dark:hover:bg-indigo-600"
-                      : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  } ${isPending ? "opacity-50 cursor-not-allowed" : ""}`}
-                >
-                  {currency}
-                </button>
-              ))}
-            </div>
+          <div
+            className={`mb-4 ${
+              isPending ? "opacity-50 pointer-events-none" : ""
+            }`}
+          >
+            <CurrencyFilter
+              selectedCountry={selectedCountry}
+              onCountryChange={handleCurrencyChange}
+              countries={countries}
+              variant="buttons"
+              showLabel={true}
+            />
           </div>
 
           {/* Payment Type Filter */}
-          <div className="mb-6">
-            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
-              Filter by Payment Type
-            </label>
-            <div className="flex gap-2 flex-wrap">
-              {paymentTypes.map((paymentType) => (
-                <button
-                  key={paymentType}
-                  onClick={() =>
-                    updateFilters({
-                      currency: currentCurrency,
-                      paymentType:
-                        paymentType === "All" ? undefined : paymentType,
-                    })
-                  }
-                  disabled={isPending}
-                  className={`px-3 md:px-4 py-2 rounded-lg font-medium text-sm transition-all capitalize ${
-                    (
-                      paymentType === "All"
-                        ? !currentPaymentType
-                        : currentPaymentType === paymentType
-                    )
-                      ? "bg-emerald-600 dark:bg-emerald-500 text-white shadow-md hover:bg-emerald-700 dark:hover:bg-emerald-600"
-                      : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  } ${isPending ? "opacity-50 cursor-not-allowed" : ""}`}
-                >
-                  {paymentType}
-                </button>
-              ))}
-            </div>
+          <div
+            className={`mb-6 ${
+              isPending ? "opacity-50 pointer-events-none" : ""
+            }`}
+          >
+            <PaymentTypeFilter
+              selectedPaymentType={selectedPaymentType}
+              onPaymentTypeChange={handlePaymentTypeChange}
+              paymentTypes={paymentTypes}
+              showLabel={true}
+            />
           </div>
 
           {/* Info Bar */}
@@ -249,178 +232,11 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
             )}
           </div>
 
-          {/* Table */}
-          {transactionData?.data.length === 0 ? (
-            <div className="py-20 text-center text-gray-500 dark:text-gray-400">
-              <svg
-                className="mx-auto h-16 w-16 mb-4 opacity-40"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-              <p className="text-lg font-semibold">No transactions found</p>
-              <p className="text-sm mt-2 opacity-75">
-                Try adjusting your filters
-              </p>
-            </div>
-          ) : (
-            <div
-              className={
-                isPending
-                  ? "opacity-60 transition-opacity"
-                  : "transition-opacity"
-              }
-            >
-              {/* Desktop Table View */}
-              <div className="hidden md:block overflow-x-auto">
-                <table className="w-full border-collapse">
-                  <thead>
-                    <tr className="border-b-2 border-gray-200 dark:border-gray-700">
-                      <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                        ID
-                      </th>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                        Date
-                      </th>
-                      <th className="text-right py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                        Amount
-                      </th>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                        Currency
-                      </th>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                        Payment Type
-                      </th>
-                      <th className="text-right py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                        Fee
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {transactionData?.data.map((tx: Transaction) => {
-                      const feeBps = getFeeBps(tx);
-                      const feeAmount = calcFeeAmount(tx.amount, feeBps);
-                      const isOverride = hasOverride(tx);
-
-                      return (
-                        <tr
-                          key={tx.id}
-                          className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                        >
-                          <td className="py-3 px-4 font-mono text-sm text-gray-600 dark:text-gray-400">
-                            {tx.id}
-                          </td>
-                          <td className="py-3 px-4 text-gray-700 dark:text-gray-300">
-                            {formatDate(tx.createdAt)}
-                          </td>
-                          <td className="py-3 px-4 text-right font-semibold text-gray-800 dark:text-gray-200">
-                            {formatAmount(tx.amount)}
-                          </td>
-                          <td className="py-3 px-4 text-gray-700 dark:text-gray-300">
-                            {tx.currency}
-                          </td>
-                          <td className="py-3 px-4">
-                            <span
-                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                tx.paymentType === "card"
-                                  ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                                  : tx.paymentType === "bank"
-                                  ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                                  : "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
-                              }`}
-                            >
-                              {tx.paymentType}
-                            </span>
-                          </td>
-                          <td className="py-3 px-4 text-right text-gray-700 dark:text-gray-300">
-                            <div className="flex flex-col items-end gap-1">
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs text-gray-500 dark:text-gray-400">
-                                  {bpsToPercent(feeBps)}
-                                </span>
-                                {isOverride && (
-                                  <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
-                                    override
-                                  </span>
-                                )}
-                              </div>
-                              <span className="font-semibold text-gray-800 dark:text-gray-200">
-                                {formatAmount(feeAmount)}
-                              </span>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Mobile Card View */}
-              <div className="md:hidden space-y-4">
-                {transactionData?.data.map((tx: Transaction) => {
-                  const feeBps = getFeeBps(tx);
-                  const feeAmount = calcFeeAmount(tx.amount, feeBps);
-                  const isOverride = hasOverride(tx);
-
-                  return (
-                    <div
-                      key={tx.id}
-                      className="rounded-lg p-4 border bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600"
-                    >
-                      <div className="flex justify-between items-start mb-3">
-                        <span className="font-mono text-sm font-semibold text-indigo-600 dark:text-indigo-400">
-                          {tx.id}
-                        </span>
-                        <div className="flex items-center gap-2">
-                          {isOverride && (
-                            <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
-                              override
-                            </span>
-                          )}
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              tx.paymentType === "card"
-                                ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                                : tx.paymentType === "bank"
-                                ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                                : "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
-                            }`}
-                          >
-                            {tx.paymentType}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="text-2xl font-bold mb-2 text-gray-800 dark:text-gray-200">
-                        {tx.currency} {formatAmount(tx.amount)}
-                      </div>
-
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
-                          Fee ({bpsToPercent(feeBps)})
-                        </span>
-                        <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                          {formatAmount(feeAmount)}
-                        </span>
-                      </div>
-
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {formatDate(tx.createdAt)}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          {/* Transaction Table */}
+          <TransactionTable
+            transactions={transactionData?.data || []}
+            isPending={isPending}
+          />
         </div>
 
         {/* Pagination - Below the table card */}
@@ -526,7 +342,19 @@ export default function Question7Client({ initialData }: Question7ClientProps) {
 
             <div>
               <h4 className="font-semibold mb-2">
-                7. No Over-Fetching Pattern
+                7. Component Separation and Reusability
+              </h4>
+              <p>
+                Uses shared CurrencyFilter, PaymentTypeFilter, and
+                TransactionTable components for consistent UI patterns and
+                better code organization. Each component has a single
+                responsibility.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-2">
+                8. No Over-Fetching Pattern
               </h4>
               <p>
                 By using server components and URL state, we eliminate
