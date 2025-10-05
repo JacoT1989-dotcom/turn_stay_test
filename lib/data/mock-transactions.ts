@@ -1,4 +1,4 @@
-import { Transaction } from "../types/transaction";
+import { Transaction } from "@/lib/types/shared-types";
 
 export const mockTransactions: Transaction[] = [
   {

@@ -2,7 +2,7 @@
 import {
   type TransactionResponse,
   type TransactionFilters,
-} from "@/lib/types/transaction";
+} from "@/lib/types/shared-types";
 import { mockTransactions } from "../data/mock-transactions";
 
 // Mock database - in production this would be a real database connection

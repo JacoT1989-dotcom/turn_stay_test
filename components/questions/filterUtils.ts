@@ -1,6 +1,6 @@
 // components/questions/filterUtils.ts
 
-import { Country, PaymentType, Tx } from "./shared-types";
+import { Country, PaymentType, Tx } from "../../lib/types/shared-types";
 
 /**
  * Filters transactions by country

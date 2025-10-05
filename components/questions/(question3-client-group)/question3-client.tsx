@@ -10,7 +10,7 @@ import {
 } from "../formatters";
 import PaymentTypeFilter from "../PaymentTypeFilter";
 import { transactions } from "./transactions-data";
-import { Country, PaymentType } from "../shared-types";
+import { Country, PaymentType } from "../../../lib/types/shared-types";
 import CurrencyFilter from "../CurrencyFilter";
 import { filterTransactions } from "../filterUtils";
 

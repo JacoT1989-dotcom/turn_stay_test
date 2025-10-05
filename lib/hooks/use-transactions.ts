@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import type {
   TransactionResponse,
   TransactionFilters,
-} from "@/lib/types/transaction";
+} from "@/lib/types/shared-types";
 
 async function fetchTransactions(
   filters: TransactionFilters

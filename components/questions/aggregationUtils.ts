@@ -1,6 +1,6 @@
 // components/questions/aggregationUtils.ts
 
-import { Tx } from "./shared-types";
+import { Tx } from "../../lib/types/shared-types";
 import { getFeeBps, calcFeeAmount } from "./feeUtils";
 
 /**

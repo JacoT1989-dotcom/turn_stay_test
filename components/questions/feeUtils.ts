@@ -1,6 +1,6 @@
 // components/questions/feeUtils.ts
 
-import { Tx } from "./shared-types";
+import { Tx } from "../../lib/types/shared-types";
 
 /**
  * Fee utility functions for transaction fee calculations

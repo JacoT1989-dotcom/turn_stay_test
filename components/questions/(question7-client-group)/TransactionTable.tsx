@@ -1,7 +1,7 @@
 // components/questions/TransactionTable.tsx
 
 import { bpsToPercent, calcFeeAmount, getFeeBps } from "@/lib/utils/fee-utils";
-import type { Transaction } from "@/lib/types/transaction";
+import type { Transaction } from "@/lib/types/shared-types";
 
 interface TransactionTableProps {
   transactions: Transaction[];

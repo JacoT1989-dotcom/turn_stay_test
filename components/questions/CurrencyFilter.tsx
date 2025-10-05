@@ -1,7 +1,7 @@
 // components/questions/shared/CurrencyFilter.tsx
 
 import { getCurrencyFromCountry } from "./formatters";
-import { Country } from "./shared-types";
+import { Country } from "../../lib/types/shared-types";
 
 interface CurrencyFilterProps {
   selectedCountry: Country;

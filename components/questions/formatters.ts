@@ -1,6 +1,6 @@
 // utils/formatters.ts
 
-import { countryCurrencyMap } from "./shared-types";
+import { countryCurrencyMap } from "../../lib/types/shared-types";
 
 /**
  * Format amount from minor units (cents) to major units with currency symbol

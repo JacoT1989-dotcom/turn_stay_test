@@ -8,7 +8,7 @@ import {
 import Question7Client from "@/components/questions/(question7-client-group)/question7-client";
 import { getTransactions } from "@/lib/services/transaction-service";
 import { transactionQuerySchema } from "@/lib/validation/transaction-schema";
-import type { TransactionFilters } from "@/lib/types/transaction";
+import type { TransactionFilters } from "@/lib/types/shared-types";
 
 interface Question7PageProps {
   searchParams: Promise<TransactionFilters>;

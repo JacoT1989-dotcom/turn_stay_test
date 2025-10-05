@@ -7,7 +7,7 @@ import {
   getRuleCriteria,
 } from "@/lib/services/policy-resolver";
 import { mockTenantPolicy } from "@/lib/data/mock-policies";
-import type { Transaction } from "@/lib/types/transaction";
+import type { Transaction } from "@/lib/types/shared-types";
 
 const transactions: Transaction[] = [
   {

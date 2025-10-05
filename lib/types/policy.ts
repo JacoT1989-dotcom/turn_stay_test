@@ -1,5 +1,5 @@
 // lib/types/policy.ts
-import type { Transaction } from "./transaction";
+import type { Transaction } from "./shared-types";
 
 // Amount tier for progressive pricing
 export interface AmountTier {

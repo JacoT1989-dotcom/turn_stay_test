@@ -3,7 +3,7 @@
 "use client";
 import Link from "next/link";
 import { useState, useMemo } from "react";
-import { Country } from "../shared-types";
+import { Country } from "../../../lib/types/shared-types";
 import { transactions } from "./transactions-data";
 import {
   formatAmount,
