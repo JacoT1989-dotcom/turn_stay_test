@@ -1,4 +1,4 @@
-// components/questions/shared-types.ts
+// lib\types\shared-types.ts
 
 export type Country = "All" | "ZA" | "US" | "EUR";
 export type PaymentType = "All" | "card" | "bank" | "wallet";
@@ -21,8 +21,6 @@ export const countryCurrencyMap: Record<
   US: { code: "USD", locale: "en-US" },
   EUR: { code: "EUR", locale: "de-DE" },
 };
-
-// lib/types/transaction.ts
 
 export type Transaction = {
   id: string;
