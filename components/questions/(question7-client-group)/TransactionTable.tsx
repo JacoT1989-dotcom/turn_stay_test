@@ -22,13 +22,14 @@ export default function TransactionTable({
 
   const formatDate = (isoDate: string): string => {
     const date = new Date(isoDate);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    // Use simpler formatting to avoid hydration mismatches
+    const year = date.getFullYear();
+    const month = date.toLocaleString("en-US", { month: "short" });
+    const day = date.getDate();
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+
+    return `${month} ${day}, ${year}, ${hours}:${minutes}`;
   };
 
   const hasOverride = (tx: Transaction): boolean => {
