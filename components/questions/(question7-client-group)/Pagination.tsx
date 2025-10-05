@@ -1,4 +1,4 @@
-// components/Pagination.tsx
+// components\questions\(question7-client-group)\Pagination.tsx
 
 interface PaginationProps {
   currentPage: number;
