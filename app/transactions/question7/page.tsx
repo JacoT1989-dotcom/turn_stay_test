@@ -49,7 +49,8 @@ export default async function Question7Page({
   return (
     <Suspense fallback={<LoadingSkeleton />}>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <Question7Client filters={validatedParams} />
+        <Question7Client filters={validatedParams} />{" "}
+        {/* Why validate on the server?, Users can manually edit URLs, Protection against malicious input, Type safety for TypeScript, Consistent data shape */}
       </HydrationBoundary>
     </Suspense>
   );
