@@ -16,6 +16,7 @@ async function fetchTransactions(
   if (filters.limit) params.set("limit", filters.limit.toString());
 
   const response = await fetch(`/api/transactions?${params.toString()}`);
+  // Input currency: "ZAR", limit: 10 } => Output URL string: "currency=ZAR&limit=10"
 
   if (!response.ok) {
     throw new Error("Failed to fetch transactions");
