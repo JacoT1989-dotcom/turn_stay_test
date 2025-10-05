@@ -1,5 +1,6 @@
 // components/questions/(question8-client-group)/PolicyResolutionTable.tsx
 import type { TransactionWithPolicyResult } from "@/lib/hooks/use-transactions-with-policy";
+import { formatAmount, formatDate } from "../formatters";
 
 interface PolicyResolutionTableProps {
   transactionsWithPolicy: TransactionWithPolicyResult[];
@@ -12,23 +13,17 @@ export default function PolicyResolutionTable({
   isPending,
   onExplainClick,
 }: PolicyResolutionTableProps) {
-  const formatAmount = (amount: number): string => {
-    const majorUnits = amount / 100;
-    return majorUnits.toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-  };
-
-  const formatDate = (isoDate: string): string => {
-    const date = new Date(isoDate);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+  const getCountryFromCurrency = (currency: string): "ZA" | "US" | "EUR" => {
+    switch (currency) {
+      case "ZAR":
+        return "ZA";
+      case "USD":
+        return "US";
+      case "EUR":
+        return "EUR";
+      default:
+        return "ZA";
+    }
   };
 
   if (transactionsWithPolicy.length === 0) {
@@ -74,9 +69,6 @@ export default function PolicyResolutionTable({
                 Amount
               </th>
               <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                Currency
-              </th>
-              <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                 Payment
               </th>
               <th className="text-right py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
@@ -88,24 +80,97 @@ export default function PolicyResolutionTable({
             </tr>
           </thead>
           <tbody>
-            {transactionsWithPolicy.map(({ transaction: tx, resolution }) => (
-              <tr
-                key={tx.id}
-                className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-              >
-                <td className="py-3 px-4 font-mono text-sm text-gray-600 dark:text-gray-400">
+            {transactionsWithPolicy.map(({ transaction: tx, resolution }) => {
+              const country = getCountryFromCurrency(tx.currency);
+              return (
+                <tr
+                  key={tx.id}
+                  className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <td className="py-3 px-4 font-mono text-sm text-gray-600 dark:text-gray-400">
+                    {tx.id}
+                  </td>
+                  <td className="py-3 px-4 text-gray-700 dark:text-gray-300">
+                    {formatDate(tx.createdAt)}
+                  </td>
+                  <td className="py-3 px-4 text-right font-semibold text-gray-800 dark:text-gray-200">
+                    {formatAmount(tx.amount, country)}
+                  </td>
+                  <td className="py-3 px-4">
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        tx.paymentType === "card"
+                          ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                          : tx.paymentType === "bank"
+                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                          : "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+                      }`}
+                    >
+                      {tx.paymentType}
+                      {tx.scheme && ` • ${tx.scheme}`}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4 text-right text-gray-700 dark:text-gray-300">
+                    <div className="flex flex-col items-end gap-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                          {(resolution.feeBps / 100).toFixed(2)}%
+                        </span>
+                        {resolution.finalRule && (
+                          <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                            policy
+                          </span>
+                        )}
+                        {resolution.conflict && (
+                          <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                            conflict
+                          </span>
+                        )}
+                      </div>
+                      <span className="font-semibold text-gray-800 dark:text-gray-200">
+                        {formatAmount(resolution.feeAmount, country)}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="py-3 px-4 text-center">
+                    <button
+                      onClick={() => onExplainClick(tx.id)}
+                      className="px-3 py-1 rounded-lg text-sm font-medium transition-all bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-800"
+                    >
+                      Explain
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="md:hidden space-y-4">
+        {transactionsWithPolicy.map(({ transaction: tx, resolution }) => {
+          const country = getCountryFromCurrency(tx.currency);
+          return (
+            <div
+              key={tx.id}
+              className="rounded-lg p-4 border bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600"
+            >
+              <div className="flex justify-between items-start mb-3">
+                <span className="font-mono text-sm font-semibold text-indigo-600 dark:text-indigo-400">
                   {tx.id}
-                </td>
-                <td className="py-3 px-4 text-gray-700 dark:text-gray-300">
-                  {formatDate(tx.createdAt)}
-                </td>
-                <td className="py-3 px-4 text-right font-semibold text-gray-800 dark:text-gray-200">
-                  {formatAmount(tx.amount)}
-                </td>
-                <td className="py-3 px-4 text-gray-700 dark:text-gray-300">
-                  {tx.currency}
-                </td>
-                <td className="py-3 px-4">
+                </span>
+                <div className="flex items-center gap-2 flex-wrap justify-end">
+                  {resolution.finalRule && (
+                    <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                      policy
+                    </span>
+                  )}
+                  {resolution.conflict && (
+                    <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                      conflict
+                    </span>
+                  )}
                   <span
                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                       tx.paymentType === "card"
@@ -118,105 +183,35 @@ export default function PolicyResolutionTable({
                     {tx.paymentType}
                     {tx.scheme && ` • ${tx.scheme}`}
                   </span>
-                </td>
-                <td className="py-3 px-4 text-right text-gray-700 dark:text-gray-300">
-                  <div className="flex flex-col items-end gap-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
-                        {(resolution.feeBps / 100).toFixed(2)}%
-                      </span>
-                      {resolution.finalRule && (
-                        <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                          policy
-                        </span>
-                      )}
-                      {resolution.conflict && (
-                        <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                          conflict
-                        </span>
-                      )}
-                    </div>
-                    <span className="font-semibold text-gray-800 dark:text-gray-200">
-                      {formatAmount(resolution.feeAmount)}
-                    </span>
-                  </div>
-                </td>
-                <td className="py-3 px-4 text-center">
-                  <button
-                    onClick={() => onExplainClick(tx.id)}
-                    className="px-3 py-1 rounded-lg text-sm font-medium transition-all bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-800"
-                  >
-                    Explain
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                </div>
+              </div>
 
-      {/* Mobile Card View */}
-      <div className="md:hidden space-y-4">
-        {transactionsWithPolicy.map(({ transaction: tx, resolution }) => (
-          <div
-            key={tx.id}
-            className="rounded-lg p-4 border bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600"
-          >
-            <div className="flex justify-between items-start mb-3">
-              <span className="font-mono text-sm font-semibold text-indigo-600 dark:text-indigo-400">
-                {tx.id}
-              </span>
-              <div className="flex items-center gap-2 flex-wrap justify-end">
-                {resolution.finalRule && (
-                  <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                    policy
-                  </span>
-                )}
-                {resolution.conflict && (
-                  <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                    conflict
-                  </span>
-                )}
-                <span
-                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    tx.paymentType === "card"
-                      ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                      : tx.paymentType === "bank"
-                      ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                      : "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
-                  }`}
-                >
-                  {tx.paymentType}
-                  {tx.scheme && ` • ${tx.scheme}`}
+              <div className="text-2xl font-bold mb-2 text-gray-800 dark:text-gray-200">
+                {formatAmount(tx.amount, country)}
+              </div>
+
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm text-gray-600 dark:text-gray-400">
+                  Fee ({(resolution.feeBps / 100).toFixed(2)}%)
+                </span>
+                <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                  {formatAmount(resolution.feeAmount, country)}
                 </span>
               </div>
-            </div>
 
-            <div className="text-2xl font-bold mb-2 text-gray-800 dark:text-gray-200">
-              {tx.currency} {formatAmount(tx.amount)}
-            </div>
+              <div className="text-sm mb-3 text-gray-600 dark:text-gray-400">
+                {formatDate(tx.createdAt)}
+              </div>
 
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                Fee ({(resolution.feeBps / 100).toFixed(2)}%)
-              </span>
-              <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                {formatAmount(resolution.feeAmount)}
-              </span>
+              <button
+                onClick={() => onExplainClick(tx.id)}
+                className="w-full px-4 py-2.5 rounded-lg font-semibold transition-all shadow-md bg-indigo-600 dark:bg-indigo-500 text-white hover:bg-indigo-700 dark:hover:bg-indigo-600"
+              >
+                Explain This Fee
+              </button>
             </div>
-
-            <div className="text-sm mb-3 text-gray-600 dark:text-gray-400">
-              {formatDate(tx.createdAt)}
-            </div>
-
-            <button
-              onClick={() => onExplainClick(tx.id)}
-              className="w-full px-4 py-2.5 rounded-lg font-semibold transition-all shadow-md bg-indigo-600 dark:bg-indigo-500 text-white hover:bg-indigo-700 dark:hover:bg-indigo-600"
-            >
-              Explain This Fee
-            </button>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
