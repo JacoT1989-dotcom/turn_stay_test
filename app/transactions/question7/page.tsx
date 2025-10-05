@@ -8,10 +8,9 @@ import {
 import Question7Client from "@/components/questions/(question7-client-group)/question7-client";
 import { getTransactions } from "@/lib/services/transaction-service";
 import { transactionQuerySchema } from "@/lib/validation/transaction-schema";
-import type { TransactionFilters } from "@/lib/types/shared-types";
 
 interface Question7PageProps {
-  searchParams: Promise<TransactionFilters>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export default async function Question7Page({
@@ -20,12 +19,12 @@ export default async function Question7Page({
   // Await searchParams before accessing its properties
   const params = await searchParams;
 
-  // Validate and parse search params
+  // Validate and parse search params - convert to proper format for Zod
   const validatedParams = transactionQuerySchema.parse({
-    currency: params.currency,
-    paymentType: params.paymentType,
-    cursor: params.cursor,
-    limit: params.limit,
+    currency: params.currency || undefined,
+    paymentType: params.paymentType || undefined,
+    cursor: params.cursor || undefined,
+    limit: params.limit || undefined,
   });
 
   // Create a new QueryClient instance for this request
@@ -49,8 +48,7 @@ export default async function Question7Page({
   return (
     <Suspense fallback={<LoadingSkeleton />}>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <Question7Client filters={validatedParams} />{" "}
-        {/* Why validate on the server?, Users can manually edit URLs, Protection against malicious input, Type safety for TypeScript, Consistent data shape */}
+        <Question7Client filters={validatedParams} />
       </HydrationBoundary>
     </Suspense>
   );
@@ -72,8 +70,8 @@ function LoadingSkeleton() {
 // Generate metadata for SEO
 export async function generateMetadata({ searchParams }: Question7PageProps) {
   const params = await searchParams;
-  const currency = params.currency || "All";
-  const paymentType = params.paymentType || "All";
+  const currency = (params.currency as string) || "All";
+  const paymentType = (params.paymentType as string) || "All";
 
   return {
     title: `Transactions - ${currency} - ${paymentType}`,

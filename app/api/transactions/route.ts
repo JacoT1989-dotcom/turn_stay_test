@@ -9,11 +9,12 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     // Example URL: /api/transactions?currency=ZAR&limit=10
 
+    // Convert null values to undefined for optional fields
     const params = transactionQuerySchema.parse({
-      currency: searchParams.get("currency"),
-      paymentType: searchParams.get("paymentType"),
-      cursor: searchParams.get("cursor"),
-      limit: searchParams.get("limit") || "5",
+      currency: searchParams.get("currency") || undefined,
+      paymentType: searchParams.get("paymentType") || undefined,
+      cursor: searchParams.get("cursor") || undefined,
+      limit: searchParams.get("limit") || undefined,
     });
 
     const data = await getTransactions(params);
