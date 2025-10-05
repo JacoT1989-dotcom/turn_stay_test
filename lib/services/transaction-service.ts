@@ -2,8 +2,8 @@
 import {
   type TransactionResponse,
   type TransactionFilters,
-  mockTransactions,
 } from "@/lib/types/transaction";
+import { mockTransactions } from "../data/mock-transactions";
 
 // Mock database - in production this would be a real database connection
 

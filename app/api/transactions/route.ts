@@ -7,6 +7,7 @@ import { getTransactions } from "@/lib/services/transaction-service";
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
+    // Example URL: /api/transactions?currency=ZAR&limit=10
 
     const params = transactionQuerySchema.parse({
       currency: searchParams.get("currency"),
