@@ -6,11 +6,11 @@ import Link from "next/link";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 import type { TransactionFilters } from "@/lib/types/transaction";
-import PaymentTypeFilter from "@/components/questions/PaymentTypeFilter";
 import type { Country, PaymentType } from "@/components/questions/shared-types";
 import CurrencyFilter from "../CurrencyFilter";
 import TransactionTable from "./TransactionTable";
 import { useTransactions } from "@/lib/hooks/use-transactions";
+import PaymentTypeFilter from "../PaymentTypeFilter";
 
 interface Question7ClientProps {
   filters: TransactionFilters;
