@@ -23,12 +23,13 @@ async function fetchTransactions(
     throw new Error("Failed to fetch transactions");
   }
 
+  // Converts response body from JSON string to JavaScript object
   return response.json();
 }
 
 export function useTransactions(
-  filters: TransactionFilters,
-  initialData?: TransactionResponse
+  filters: TransactionFilters, //  What to filter by: currency, paymentType, cursor, limit
+  initialData?: TransactionResponse // Initial data for SSR or prefetching
 ) {
   return useQuery({
     queryKey: [
