@@ -5,8 +5,11 @@
 import Link from "next/link";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
-import type { TransactionFilters } from "@/lib/types/shared-types";
-import type { Country, PaymentType } from "@/lib/types/shared-types";
+import type {
+  TransactionFilters,
+  Country,
+  PaymentType,
+} from "@/lib/types/shared-types";
 import CurrencyFilter from "../CurrencyFilter";
 import TransactionTable from "./TransactionTable";
 import { useTransactions } from "@/lib/hooks/use-transactions";
