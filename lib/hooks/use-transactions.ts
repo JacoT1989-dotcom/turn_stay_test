@@ -18,6 +18,7 @@ async function fetchTransactions(
   const response = await fetch(`/api/transactions?${params.toString()}`);
   // Input currency: "ZAR", limit: 10 } => Output URL string: "currency=ZAR&limit=10"
 
+  // Handle HTTP errors and retry depending on your settings in the query provider
   if (!response.ok) {
     throw new Error("Failed to fetch transactions");
   }
