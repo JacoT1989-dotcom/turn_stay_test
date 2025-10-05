@@ -1,6 +1,22 @@
 // app/transactions/question8/page.tsx
 import { Suspense } from "react";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 import Question8Client from "@/components/questions/(question8-client-group)/question8-client";
+import { getTransactionsWithPolicy } from "@/lib/services/transaction-policy-service";
+import type { TransactionWithPolicyFilters } from "@/lib/hooks/use-transactions-with-policy";
+
+interface Question8PageProps {
+  searchParams: Promise<{
+    currency?: "ZAR" | "USD" | "EUR";
+    paymentType?: "card" | "bank" | "wallet";
+    cursor?: string;
+    limit?: string;
+  }>;
+}
 
 function Question8Loading() {
   return (
@@ -17,11 +33,41 @@ function Question8Loading() {
   );
 }
 
-export default function Question8Page() {
+export default async function Question8Page({
+  searchParams,
+}: Question8PageProps) {
+  // Await searchParams in Next.js 15
+  const params = await searchParams;
+
+  // Build filters from URL params
+  const filters: TransactionWithPolicyFilters = {
+    currency: params.currency,
+    paymentType: params.paymentType,
+    cursor: params.cursor,
+    limit: params.limit ? parseInt(params.limit) : 5,
+  };
+
+  // Create a new QueryClient for this request
+  const queryClient = new QueryClient();
+
+  // Prefetch the data on the server
+  await queryClient.prefetchQuery({
+    queryKey: [
+      "transactions-with-policy",
+      filters.currency,
+      filters.paymentType,
+      filters.cursor,
+      filters.tenantId,
+    ],
+    queryFn: () => getTransactionsWithPolicy(filters),
+  });
+
   return (
-    <Suspense fallback={<Question8Loading />}>
-      <Question8Client />
-    </Suspense>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Suspense fallback={<Question8Loading />}>
+        <Question8Client filters={filters} />
+      </Suspense>
+    </HydrationBoundary>
   );
 }
 

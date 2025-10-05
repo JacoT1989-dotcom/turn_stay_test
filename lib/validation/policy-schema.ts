@@ -38,6 +38,15 @@ export const singlePolicyResolutionSchema = z.object({
   tenantId: z.string().default("tenant_001"),
 });
 
+// Schema for querying transactions with policy resolution (GET request)
+export const transactionPolicyQuerySchema = z.object({
+  currency: z.enum(["ZAR", "USD", "EUR"]).optional(),
+  paymentType: z.enum(["card", "bank", "wallet"]).optional(),
+  cursor: z.string().optional(),
+  limit: z.coerce.number().min(1).max(100).default(20),
+  tenantId: z.string().default("tenant_001"),
+});
+
 // Type exports
 export type PolicyTransactionInput = z.infer<typeof policyTransactionSchema>;
 export type BatchPolicyResolutionInput = z.infer<
@@ -45,4 +54,7 @@ export type BatchPolicyResolutionInput = z.infer<
 >;
 export type SinglePolicyResolutionInput = z.infer<
   typeof singlePolicyResolutionSchema
+>;
+export type TransactionPolicyQuery = z.infer<
+  typeof transactionPolicyQuerySchema
 >;
