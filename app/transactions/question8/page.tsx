@@ -71,8 +71,14 @@ export default async function Question8Page({
   );
 }
 
-export const metadata = {
-  title: "Question 8 - Multi-Tenant Fee Policy",
-  description:
-    "Policy resolution system with explainability and conflict detection",
-};
+// Generate dynamic metadata for SEO
+export async function generateMetadata({ searchParams }: Question8PageProps) {
+  const params = await searchParams;
+  const currency = params.currency || "All";
+  const paymentType = params.paymentType || "All";
+
+  return {
+    title: `Policy Resolution - ${currency} - ${paymentType}`,
+    description: `View fee policy resolution for ${currency} transactions with ${paymentType} payment type`,
+  };
+}

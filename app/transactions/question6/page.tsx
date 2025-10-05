@@ -4,3 +4,9 @@ import Question6Client from "@/components/questions/(question6-client-group)/que
 export default function Question6Page() {
   return <Question6Client />;
 }
+
+export const metadata = {
+  title: "Question 6",
+  description:
+    "Enhanced transaction management with real-time updates and user-friendly interface",
+};

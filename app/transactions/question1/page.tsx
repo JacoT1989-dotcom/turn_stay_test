@@ -4,3 +4,8 @@ import Question1Client from "@/components/questions/(question1-client-group)/que
 export default function Question1Page() {
   return <Question1Client />;
 }
+
+export const metadata = {
+  title: "Question 1",
+  description: "Interactive transaction filtering by country and payment type",
+};

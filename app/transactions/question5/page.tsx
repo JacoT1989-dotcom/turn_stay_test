@@ -4,3 +4,9 @@ import Question5Client from "@/components/questions/(question5-client-group)/que
 export default function Question5Page() {
   return <Question5Client />;
 }
+
+export const metadata = {
+  title: "Question 5",
+  description:
+    "Comprehensive transaction overview with dynamic filtering and export options",
+};

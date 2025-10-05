@@ -4,3 +4,9 @@ import Question3Client from "@/components/questions/(question3-client-group)/que
 export default function Question3Page() {
   return <Question3Client />;
 }
+
+export const metadata = {
+  title: "Question 3",
+  description:
+    "Comprehensive transaction dashboard with multi-faceted filtering and analysis",
+};
