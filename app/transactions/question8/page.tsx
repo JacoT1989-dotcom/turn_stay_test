@@ -1,5 +1,5 @@
 // app/transactions/question8/page.tsx
-import Question8Client from "@/components/questions/question8-client";
+import Question8Client from "@/components/questions/(question8-client-group)/question8-client";
 
 export default function Question8Page() {
   return <Question8Client />;
