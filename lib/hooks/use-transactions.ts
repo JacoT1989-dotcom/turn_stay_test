@@ -29,14 +29,15 @@ async function fetchTransactions(
 
 export function useTransactions(
   filters: TransactionFilters, //  What to filter by: currency, paymentType, cursor, limit
-  initialData?: TransactionResponse // Initial data for SSR or prefetching
+  initialData?: TransactionResponse // Initial data for SSR or prefetching or Pre-loaded data to show immediately:
 ) {
   return useQuery({
     queryKey: [
-      "transactions",
+      "transactions", // Purpose: Unique identifier for this query in the cache. Multiple components can share the same cache if they have the same key
       filters.currency,
       filters.paymentType,
       filters.cursor,
+      // limit is not included in the key to allow fetching more pages with the same base query, Including it would cause a new fetch every time limit changes
     ],
     queryFn: () => fetchTransactions(filters),
     initialData,
