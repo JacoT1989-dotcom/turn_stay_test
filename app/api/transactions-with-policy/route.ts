@@ -10,13 +10,23 @@ export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
 
-    const params = transactionPolicyQuerySchema.parse({
+    // Parse and validate the query parameters
+    const validatedParams = transactionPolicyQuerySchema.parse({
       currency: searchParams.get("currency"),
       paymentType: searchParams.get("paymentType"),
       cursor: searchParams.get("cursor"),
-      limit: searchParams.get("limit") || "20",
-      tenantId: searchParams.get("tenantId") || "tenant_001",
+      limit: searchParams.get("limit"),
+      tenantId: searchParams.get("tenantId"),
     });
+
+    // Extract and set defaults after validation
+    const params = {
+      currency: validatedParams.currency || undefined,
+      paymentType: validatedParams.paymentType || undefined,
+      cursor: validatedParams.cursor || undefined,
+      limit: validatedParams.limit ? parseInt(validatedParams.limit) : 20,
+      tenantId: validatedParams.tenantId || "tenant_001",
+    };
 
     // Filter transactions
     let filtered = [...mockTransactions];
@@ -79,6 +89,10 @@ export async function GET(request: NextRequest) {
     return response;
   } catch (error) {
     if (error instanceof z.ZodError) {
+      console.error(
+        "Zod validation error:",
+        JSON.stringify(error.issues, null, 2)
+      );
       return NextResponse.json(
         { error: "Invalid query parameters", details: error.issues },
         { status: 400 }

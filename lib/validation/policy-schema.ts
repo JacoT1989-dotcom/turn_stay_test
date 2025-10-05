@@ -40,11 +40,11 @@ export const singlePolicyResolutionSchema = z.object({
 
 // Schema for querying transactions with policy resolution (GET request)
 export const transactionPolicyQuerySchema = z.object({
-  currency: z.enum(["ZAR", "USD", "EUR"]).optional(),
-  paymentType: z.enum(["card", "bank", "wallet"]).optional(),
-  cursor: z.string().optional(),
-  limit: z.coerce.number().min(1).max(100).default(20),
-  tenantId: z.string().default("tenant_001"),
+  currency: z.enum(["ZAR", "USD", "EUR"]).optional().nullable(),
+  paymentType: z.enum(["card", "bank", "wallet"]).optional().nullable(),
+  cursor: z.string().optional().nullable(),
+  limit: z.string().optional().nullable(),
+  tenantId: z.string().optional().nullable(),
 });
 
 // Type exports
